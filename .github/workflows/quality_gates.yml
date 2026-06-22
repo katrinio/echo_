@@ -7,17 +7,24 @@ on:
 
 jobs:
   python-style:
-    name: 🧮 Python Style
+    name: 📟 Python Style
     runs-on: ubuntu-latest
-
-    container:
-      image: ghcr.io/katrinio/finpipe-ci:latest
 
     steps:
       - uses: actions/checkout@v5
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Install Poetry
+        run: python -m pip install poetry==2.2.1
+
+      - name: Install dependencies
+        run: poetry install --no-interaction
+
       - name: Run Ruff
-        run: poetry run ruff check .
+        run: poetry run ruff check src
 
       - name: Run MyPy
         run: poetry run mypy src
@@ -34,7 +41,7 @@ jobs:
 
       - uses: actions/setup-node@v5
         with:
-          node-version: 24
+          node-version: "24"
 
       - name: Install Stylelint
         run: npm install --no-save stylelint stylelint-config-standard

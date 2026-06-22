@@ -1,31 +1,30 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>lapka.log</title>
-  <link rel="stylesheet" href="/static/styles.css">
-</head>
-<body>
-  <main>
-    <header>
-      <div class="prompt">katrin@lapka:~$ timeline</div>
-        <p>
-          <a class="new-link" href="/new">+ New milestone</a>
-        </p>
-    </header>
-
-    <section class="list">
-      {% for milestone in milestones %}
-        <a class="item" href="/milestones/{{ milestone.slug }}">
-          <span class="dot">○</span>
-          <span>
-            <span class="title">{{ milestone.title }}</span>
-            <span class="date">{{ milestone.date }}</span>
-          </span>
-        </a>
-      {% endfor %}
-    </section>
-  </main>
-</body>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>lapka.log</title>
+        <link rel="stylesheet" href="/static/styles.css">
+    </head>
+    <body>
+        <main>
+            <header>
+                <div class="prompt">katrin@lapka:~$ timeline</div>
+                <p>
+                    <a class="new-link" href="/new">+ New milestone</a>
+                </p>
+            </header>
+            <section class="list">
+                {% for milestone in milestones %}
+                    <a class="item" href="/milestones/{{ milestone.slug }}">
+                        <span class="dot">○</span>
+                        <span>
+                            <span class="title">{{ milestone.title }}</span>
+                            <span class="date">{{ milestone.date }}</span>
+                        </span>
+                    </a>
+                {% endfor %}
+            </section>
+        </main>
+    </body>
 </html>

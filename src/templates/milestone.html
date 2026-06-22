@@ -1,21 +1,18 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ milestone.title }}</title>
-  <link rel="stylesheet" href="/static/styles.css">
-</head>
-<body>
-  <main>
-    <a class="back" href="/">← Back</a>
-
-    <h1>{{ milestone.title }}</h1>
-    <div class="date">{{ milestone.date }}</div>
-
-    <pre>slug: {{ milestone.slug }}</pre>
-
-    <p>{{ milestone.description }}</p>
-  </main>
-</body>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{{ milestone.title }}</title>
+        <link rel="stylesheet" href="/static/styles.css">
+    </head>
+    <body>
+        <main>
+            <a class="back" href="/">← Back</a>
+            <h1>{{ milestone.title }}</h1>
+            <div class="date">{{ milestone.date }}</div>
+            <pre>slug: {{ milestone.slug }}</pre>
+            <p>{{ milestone.description }}</p>
+        </main>
+    </body>
 </html>
