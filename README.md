@@ -1,15 +1,11 @@
 # echo_
 
+STATUS: RUNNING
+
 <p align="center">
   <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExOWtuYnBucTE1dmFiOW15MTJ6MjR5ZjA5ZzI1MWcxY2tqZm5jMHIydSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l2JJvlHT0ERLhhhfO/giphy.gif" width="200"/>
 </p>
 
-
-## Status:
-
-Work in progress.
-
-Building a quiet place for important things.
 
 -----
 A small personal log of things worth remembering.
@@ -17,7 +13,7 @@ A small personal log of things worth remembering.
 - Not a task tracker.
 - Not a second brain.
 - Just milestones.
-
+---
 Examples
 ```
 ○ VPN for friends
@@ -38,6 +34,7 @@ title: VPN for friends
 date: 2026-06-22
 slug: VPN_FOR_FRIENDS
 ```
+---
 ## Why
 
 Most projects collect tasks.
@@ -49,13 +46,14 @@ A move.
 A decision.
 A strange idea at 2 a.m.
 Something that would make it into a New Year’s recap.
-
+---
 ## Tech
 
 - FastAPI
 - Jinja2
 - SQLite
 - HTMX
+
 
 - No frontend build step.
 - No SPA.
