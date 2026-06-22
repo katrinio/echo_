@@ -1,6 +1,8 @@
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from fastapi import Form
+from fastapi.responses import RedirectResponse
 
 app = FastAPI()
 
@@ -45,4 +47,34 @@ def milestone(request: Request, slug: str):
         request,
         "milestone.html",
         {"milestone": item},
+    )
+
+@app.get("/new")
+def new_milestone(request: Request):
+    return templates.TemplateResponse(
+        request,
+        "new.html",
+        {},
+    )
+
+@app.post("/new")
+def create_milestone(
+    title: str = Form(),
+    date: str = Form(),
+    slug: str = Form(),
+    description: str = Form(),
+):
+    milestones.insert(
+        0,
+        {
+            "title": title,
+            "date": date,
+            "slug": slug,
+            "description": description,
+        },
+    )
+
+    return RedirectResponse(
+        url="/",
+        status_code=303,
     )

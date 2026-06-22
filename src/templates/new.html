@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>New milestone</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+
+<main>
+
+<a class="back" href="/">← Back</a>
+
+<h1>New milestone</h1>
+
+<form method="post" action="/new">
+
+    <label>
+        Title
+        <input name="title" required>
+    </label>
+
+    <label>
+        Date
+        <input type="date" name="date" required>
+    </label>
+
+    <label>
+        Slug
+        <input name="slug" required>
+    </label>
+
+    <label>
+        Description
+        <textarea name="description"></textarea>
+    </label>
+
+    <button type="submit">
+        Save
+    </button>
+
+</form>
+
+</main>
+
+</body>
+</html>
