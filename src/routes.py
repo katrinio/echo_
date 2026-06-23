@@ -38,11 +38,10 @@ def new_milestone(request: Request):
 @router.post("/new")
 def create_milestone(
     title: str = Form(),
-    slug: str = Form(),
     happened_at: date = Form(),
     description: str = Form(default=""),
 ):
-    Milestone.add(title=title, slug=slug, happened_at=happened_at, description=description)
+    Milestone.create_with_title(title=title, happened_at=happened_at, description=description)
     return RedirectResponse(url="/", status_code=303)
 
 

@@ -96,20 +96,8 @@ button {
 
 .date-field {
   display: flex;
-  align-items: stretch;
-  flex-direction: row;
-  gap: 12px;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.date-field span {
-  flex: 0 0 auto;
-  color: var(--text);
-  padding: 10px 0;
-  min-width: 3.5rem;
-}
 
-.date-field input[type="date"] {
-  flex: 1 1 auto;
-  margin-left: auto;
-  min-width: 0;
-}
