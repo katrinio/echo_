@@ -3,7 +3,7 @@ from collections.abc import Sequence
 from datetime import date
 from pathlib import Path
 
-from fastapi import APIRouter, Form, Request
+from fastapi import APIRouter, Form, Request, HTTPException
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 
@@ -32,7 +32,11 @@ def index(request: Request):
 
 @router.get("/new")
 def new_milestone(request: Request):
-    return templates.TemplateResponse(request, "new.html", {})
+    return templates.TemplateResponse(
+        request,
+        "new.html",
+        {"today": date.today().isoformat()}
+    )
 
 
 @router.post("/new")
@@ -41,6 +45,11 @@ def create_milestone(
     happened_at: date = Form(),
     description: str = Form(default=""),
 ):
+    if happened_at > date.today():
+        raise HTTPException(
+            status_code=400,
+            detail="Milestone date cannot be in the future.",
+        )
     Milestone.create_with_title(title=title, happened_at=happened_at, description=description)
     return RedirectResponse(url="/", status_code=303)
 
