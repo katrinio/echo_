@@ -56,8 +56,9 @@ def create_milestone(
 
 @router.get("/milestones/{slug}")
 def milestone(request: Request, slug: str):
+    item = Milestone.get_by_slug(slug)
     return templates.TemplateResponse(
         request,
         "milestone.html",
-        {"milestone": Milestone.get_by_slug(slug)},
+        {"milestone": item},
     )

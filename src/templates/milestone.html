@@ -1,9 +1,12 @@
 {% extends "base.html" %}
-{% block title %}{{ milestone.title }}{% endblock %}
+{% block title %}{{ milestone.slug }}{% endblock %}
 {% block content %}
     <a class="back" href="/">← Back</a>
-    <h1>{{ milestone.title }}</h1>
-    <div class="date">{{ milestone.date }}</div>
-    <pre>slug: {{ milestone.slug }}</pre>
-    <p>{{ milestone.description }}</p>
+    <article class="milestone-detail">
+        <h1>{{ milestone.title }}</h1>
+        <div class="date">{{ milestone.happened_at }}</div>
+        <div class="milestone-description">
+            {{ milestone.description }}
+        </div>
+    </article>
 {% endblock %}

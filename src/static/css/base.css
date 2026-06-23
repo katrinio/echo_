@@ -101,3 +101,18 @@ button {
 }
 
 
+.milestone-detail {
+    margin-top: 2rem;
+}
+
+.milestone-detail h1 {
+    margin-bottom: 0.25rem;
+}
+
+.milestone-description {
+    margin-top: 2rem;
+    text-align: left;
+    white-space: pre-wrap;
+    line-height: 1.7;
+    max-width: 70ch;
+}
