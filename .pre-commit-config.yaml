@@ -31,3 +31,10 @@ repos:
         entry: poetry run pytest
         language: system
         pass_filenames: false
+
+      - id: poetry-lock-check
+        name: Poetry lock check
+        entry: poetry lock --check
+        language: system
+        files: ^pyproject\.toml$
+        pass_filenames: false

@@ -68,3 +68,27 @@ jobs:
 
       - name: Run Pytest
         run: env -u VIRTUAL_ENV -u POETRY_ACTIVE poetry run pytest
+
+  migrations:
+    name: 🗄️ Migrations
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Install Poetry
+        run: python -m pip install poetry==2.2.1
+
+      - name: Install dependencies
+        run: env -u VIRTUAL_ENV -u POETRY_ACTIVE poetry install --no-interaction
+
+      - name: Run migrations
+        run: env -u VIRTUAL_ENV -u POETRY_ACTIVE poetry run alembic upgrade head
+
+      - name: Check no pending migrations
+        run: |
+          env -u VIRTUAL_ENV -u POETRY_ACTIVE poetry run alembic check
