@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
 from src.core.database import engine
-from src.milestones.models import Base
+from orm.milestone import Base
 from src.milestones.routes import router
 
 SRC = Path(__file__).parent.parent
