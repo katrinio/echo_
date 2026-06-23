@@ -1,21 +1,26 @@
 {% extends "base.html" %}
 {% block title %}New milestone{% endblock %}
 {% block content %}
-<a class="back" href="/">← Back</a>
-<h1>New milestone</h1>
-<form method="post" action="/new">
-    <label>
-        Title
-        <input name="title" required>
-    </label>
-    <label>
-        Date
-        <input id="happened_at" type="date" name="happened_at" value="{{ today }}" max="{{ today }}" required>
-    </label>
-    <label>
-        Description
-        <textarea name="description"></textarea>
-    </label>
-    <button type="submit">Save</button>
-</form>
+    <a class="back" href="/">← Back</a>
+    <h1>New milestone</h1>
+    <form method="post" action="/new">
+        <label>
+            Title
+            <input name="title" required>
+        </label>
+        <label>
+            Date
+            <input id="happened_at"
+                   type="date"
+                   name="happened_at"
+                   value="{{ today }}"
+                   max="{{ today }}"
+                   required>
+        </label>
+        <label>
+            Description
+            <textarea name="description"></textarea>
+        </label>
+        <button type="submit">Save</button>
+    </form>
 {% endblock %}
