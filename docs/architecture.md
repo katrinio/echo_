@@ -6,15 +6,14 @@ echo_ — личный лог вех. Небольшое веб-приложен
 
 ## Стек
 
-| Слой         | Технология                        |
-|--------------|-----------------------------------|
-| Веб-фреймворк | FastAPI                          |
-| Шаблоны      | Jinja2                            |
-| ORM          | SQLAlchemy 2.x (Mapped API)       |
-| БД           | SQLite (`echo.db` в корне проекта) |
-| Миграции     | Alembic                           |
-| Валидация форм | Pydantic v2                     |
-| Интерактивность | HTMX (планируется)             |
+| Слой           | Технология                         |
+|----------------|------------------------------------|
+| Веб-фреймворк  | FastAPI                            |
+| Шаблоны        | Jinja2                             |
+| ORM            | SQLAlchemy 2.x (Mapped API)        |
+| БД             | SQLite (`echo.db` в корне проекта) |
+| Миграции       | Alembic                            |
+| Валидация форм | Pydantic v2                        |
 
 ## Структура
 
@@ -24,8 +23,15 @@ src/
     app.py          — FastAPI app, монтирование статики, on_startup
     database.py     — SQLAlchemy engine
 
+  orm/
+    base.py         — DeclarativeBase
+    milestone.py    — ORM-модель Milestone + методы запросов
+    tags.py         — ORM-модель Tag
+    milestone_tags.py — таблица связи many-to-many
+
+  models.py         — публичный реэкспорт всех ORM-моделей
+
   milestones/
-    models.py       — ORM-модель Milestone + методы запросов
     dto.py          — MilestoneCreateDTO, MilestoneUpdateDTO (Pydantic)
     routes.py       — APIRouter, все маршруты /milestones/*
     slug.py         — генерация и нормализация slug
@@ -57,18 +63,20 @@ docs/
 
 ## Маршруты
 
-| Метод | Путь                     | Действие                    |
-|-------|--------------------------|-----------------------------|
-| GET   | `/`                      | Список вех, сгруппированных по дню |
-| GET   | `/new`                   | Форма создания вехи         |
-| POST  | `/new`                   | Создать веху                |
-| GET   | `/milestones/{slug}`     | Детальная страница вехи     |
-| GET   | `/milestones/{slug}/edit`| Форма редактирования        |
-| POST  | `/milestones/{slug}/edit`| Обновить веху               |
+| Метод | Путь                      | Действие                           |
+|-------|---------------------------|------------------------------------|
+| GET   | `/`                       | Список вех, сгруппированных по дню |
+| GET   | `/new`                    | Форма создания вехи                |
+| POST  | `/new`                    | Создать веху                       |
+| GET   | `/milestones/{slug}`      | Детальная страница вехи            |
+| GET   | `/milestones/{slug}/edit` | Форма редактирования               |
+| POST  | `/milestones/{slug}/edit` | Обновить веху                      |
 
-## Модель данных
+## Модели данных
 
-```python
+### Milestone
+
+```bash
 class Milestone(Base):
     id:           int       # первичный ключ
     title:        str       # название (до 255 символов)
@@ -76,7 +84,30 @@ class Milestone(Base):
     description:  str       # описание, по умолчанию ""
     happened_at:  date      # дата события
     created_at:   datetime  # дата записи (UTC, проставляется автоматически)
+    tags:         list[Tag] # теги (many-to-many через milestone_tags)
 ```
+
+### Tag
+
+```bash
+class Tag(Base):
+    id:         int             # первичный ключ
+    name:       str             # название тега (уникальное, до 255 символов)
+    milestones: list[Milestone] # обратная связь
+```
+
+### milestone_tags
+
+Таблица связи many-to-many между `milestones` и `tags`:
+
+| Колонка      | Тип     |
+|--------------|---------|
+| milestone_id | Integer |
+| tag_id       | Integer |
+
+## ORM
+
+Модели разделены по файлам в `src/orm/`. Публичный интерфейс — `src/models.py`, который реэкспортирует `Base`, `Milestone`, `Tag`, `milestone_tags`.
 
 Slug генерируется из title автоматически. При дубликате добавляется суффикс (`_2`, `_3`, ...).
 
@@ -90,6 +121,27 @@ Slug генерируется из title автоматически. При ду
 
 При ошибке роут возвращает шаблон формы с сообщением `error`, без редиректа.
 
+## Миграции
+
+Alembic управляет схемой БД. Текущие миграции:
+
+| Ревизия        | Описание                  |
+|----------------|---------------------------|
+| `733b95b80ad6` | Создание таблицы milestones |
+| `4f1b2d9c7a11` | Добавление таблиц tags и milestone_tags |
+
+Применить миграции:
+
+```bash
+poetry run alembic upgrade head
+```
+
+Если таблицы уже созданы через `create_all` (первый запуск), проставить текущую ревизию без выполнения SQL:
+
+```bash
+poetry run alembic stamp 4f1b2d9c7a11
+```
+
 ## CSS
 
 Каждый файл отвечает за свой контекст. `forms.css` и страничные CSS подключаются через `{% block styles %}` в конкретных шаблонах, не глобально.
@@ -100,14 +152,16 @@ Slug генерируется из title автоматически. При ду
 PYTHONPATH=src poetry run uvicorn main:app --reload
 ```
 
-Первый запуск создаёт таблицы автоматически через `on_startup`. Для миграций:
+Первый запуск создаёт таблицы автоматически через `on_startup`. После этого нужно проставить ревизию Alembic:
 
 ```bash
-PYTHONPATH=src .venv/bin/alembic upgrade head
+poetry run alembic stamp 4f1b2d9c7a11
 ```
 
 ## Качество кода
 
-Pre-commit хуки: Ruff, MyPy, djLint, pytest, Stylelint.
+Pre-commit хуки: Ruff, MyPy, djLint, Stylelint, pytest, poetry lock check.
 
-CI (GitHub Actions): те же проверки на push и pull request в `main`.
+Линтеры (кроме MyPy и pytest) запускаются только на изменённые файлы.
+
+CI (GitHub Actions): те же проверки + отдельный job для миграций (`alembic upgrade head` + `alembic check`).
