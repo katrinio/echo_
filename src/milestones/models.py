@@ -4,8 +4,8 @@ from typing import Sequence
 from sqlalchemy import Date, DateTime, String, select
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column
 
-from src.database import engine
-from src.slug import slug_from_title, slug_with_suffix
+from src.core.database import engine
+from src.milestones.slug import slug_from_title, slug_with_suffix
 
 
 class Base(DeclarativeBase):
