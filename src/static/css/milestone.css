@@ -1,0 +1,16 @@
+/* ===== Страница отдельной вехи ===== */
+.milestone-detail {
+  margin-top: 24px;
+}
+
+.milestone-date {
+  display: block;
+  color: var(--muted);
+  margin-bottom: 16px;
+}
+
+.milestone-description {
+  margin-top: 16px;
+  color: var(--text);
+  white-space: pre-wrap;
+}

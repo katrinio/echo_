@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block title %}echo_.log{% endblock %}
+{% block styles %}<link rel="stylesheet" href="/static/css/timeline.css">{% endblock %}
 {% block content %}
     <header>
         <div class="prompt">katrin@echo_:~$ timeline</div>
@@ -10,7 +11,7 @@
     <section class="list">
         {% for day, milestones in grouped_milestones.items() %}
             <div class="day-group">
-                <div class="date">{{ day }}</div>
+                <div class="timeline-date">{{ day }}</div>
                 {% for milestone in milestones %}
                     <a class="item tree-item" href="/milestones/{{ milestone.slug }}">
                         <span class="tree-branch">

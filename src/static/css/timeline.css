@@ -1,47 +1,36 @@
+/* ===== Дерево событий на главной ===== */
 .list {
   display: flex;
   flex-direction: column;
   gap: 18px;
 }
 
-.item {
-  color: var(--text);
-  text-decoration: none;
-}
-
-.list .item {
-  display: grid;
-  grid-template-columns: 24px 1fr;
-  gap: 8px;
-}
-
-.item:active,
-.item:hover {
-  color: var(--accent);
-}
-
-.title {
-  display: block;
-}
-
-.date {
-  display: block;
-  color: var(--muted);
-}
-
+/* ===== Группировка по дням ===== */
 .day-group {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.day-group .date {
+.timeline-date {
+  display: block;
+  color: var(--muted);
   margin-bottom: 2px;
 }
 
+/* ===== Ссылка на веху в списке ===== */
 .tree-item {
+  display: grid;
   grid-template-columns: 3ch 1fr;
+  gap: 8px;
   padding-left: 2px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.tree-item:hover,
+.tree-item:active {
+  color: var(--accent);
 }
 
 .tree-branch {
@@ -50,8 +39,4 @@
 
 .slug {
   color: var(--text);
-}
-
-.dot {
-  color: var(--accent);
 }

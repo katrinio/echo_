@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 {% block title %}{{ milestone.slug }}{% endblock %}
+{% block styles %}<link rel="stylesheet" href="/static/css/milestone.css">{% endblock %}
 {% block content %}
     <a class="back" href="/">← Back</a>
     <article class="milestone-detail">
         <h1>{{ milestone.title }}</h1>
-        <div class="date">{{ milestone.happened_at }}</div>
+        <div class="milestone-date">{{ milestone.happened_at }}</div>
         <div class="milestone-description">
             {{ milestone.description }}
         </div>

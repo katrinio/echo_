@@ -1,3 +1,4 @@
+/* ===== Базовые переменные и цвета ===== */
 :root {
   --bg: #111;
   --text: #c7c7c7;
@@ -6,10 +7,12 @@
   --border: #2a2a2a;
 }
 
+/* ===== Сброс и глобальные настройки ===== */
 * {
   box-sizing: border-box;
 }
 
+/* ===== Шрифт и цвет страницы ===== */
 body {
   margin: 0;
   background: var(--bg);
@@ -19,29 +22,11 @@ body {
   line-height: 1.6;
 }
 
+/* ===== Общая раскладка страницы ===== */
 main {
   max-width: 680px;
   margin: 0 auto;
   padding: 24px 18px;
-}
-
-.prompt {
-  color: var(--accent);
-  margin-bottom: 28px;
-}
-
-a {
-  color: var(--accent);
-  text-decoration: none;
-}
-
-a:hover,
-a:active {
-  color: var(--accent);
-}
-
-p {
-  margin-top: 28px;
 }
 
 h1 {
@@ -59,16 +44,41 @@ pre {
   overflow-x: auto;
 }
 
+p {
+  margin-top: 28px;
+}
+
+/* ===== Общие ссылки ===== */
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover,
+a:active {
+  color: var(--accent);
+}
+
+.back {
+  color: var(--accent);
+}
+
+.new-link {
+  color: var(--accent);
+}
+
+/* ===== Промпт на главной ===== */
+.prompt {
+  color: var(--accent);
+  margin-bottom: 28px;
+}
+
+/* ===== Форма добавления вехи ===== */
 form {
   display: flex;
   flex-direction: column;
   gap: 16px;
-}
-
-label {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  margin-top: 24px;
 }
 
 input,
@@ -78,41 +88,14 @@ textarea {
   color: var(--text);
   padding: 10px;
   font: inherit;
+  width: 100%;
 }
 
-button {
+button[type="submit"] {
   background: transparent;
   border: 1px solid var(--accent);
   color: var(--accent);
   padding: 10px;
   font: inherit;
   cursor: pointer;
-}
-
-.new-link {
-  color: var(--accent);
-  text-decoration: none;
-}
-
-.date-field {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-
-.milestone-detail {
-    margin-top: 2rem;
-}
-
-.milestone-detail h1 {
-    margin-bottom: 0.25rem;
-}
-
-.milestone-description {
-    margin-top: 2rem;
-    text-align: left;
-    white-space: pre-wrap;
-    line-height: 1.7;
-    max-width: 70ch;
 }
