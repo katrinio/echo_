@@ -70,3 +70,22 @@ class Milestone(Base):
     def get_by_slug(cls, slug: str) -> "Milestone | None":
         with Session(engine) as session:
             return session.execute(select(cls).where(cls.slug == slug)).scalars().first()
+
+    @classmethod
+    def update_by_slug(cls, slug: str, *, title: str, happened_at: date, description: str = "") -> "Milestone":
+        with Session(engine) as session:
+            milestone = session.scalar(
+                select(cls).where(cls.slug == slug)
+            )
+
+            if milestone is None:
+                raise ValueError(f"Milestone not found: {slug}")
+
+            milestone.title = title
+            milestone.happened_at = happened_at
+            milestone.description = description
+
+            session.commit()
+            session.refresh(milestone)
+
+            return milestone

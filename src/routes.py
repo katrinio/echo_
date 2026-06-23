@@ -62,3 +62,32 @@ def milestone(request: Request, slug: str):
         "milestone.html",
         {"milestone": item},
     )
+
+@router.get("/milestones/{slug}/edit")
+def edit_milestone(request: Request, slug: str):
+    item = Milestone.get_by_slug(slug)
+
+    return templates.TemplateResponse(
+        request,
+        "edit.html",
+        {"milestone": item},
+    )
+
+@router.post("/milestones/{slug}/edit")
+def update_milestone(
+    slug: str,
+    title: str = Form(),
+    happened_at: date = Form(),
+    description: str = Form(default=""),
+):
+    milestone = Milestone.update_by_slug(
+        slug,
+        title=title,
+        happened_at=happened_at,
+        description=description,
+    )
+
+    return RedirectResponse(
+        url=f"/milestones/{milestone.slug}",
+        status_code=303,
+    )

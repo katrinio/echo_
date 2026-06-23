@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Edit {{ milestone.slug }}{% endblock %}
+{% block content %}
+    <a class="back" href="/milestones/{{ milestone.slug }}">← Back</a>
+    <h1>Edit milestone</h1>
+    <form method="post" action="/milestones/{{ milestone.slug }}/edit">
+        <label>
+            Title
+            <input name="title" value="{{ milestone.title }}" required>
+        </label>
+        <label>
+            Date
+            <input id="happened_at"
+                   type="date"
+                   name="happened_at"
+                   value="{{ milestone.happened_at }}"
+                   required>
+        </label>
+        <label>
+            Description
+            <textarea name="description">{{ milestone.description }}</textarea>
+        </label>
+        <button type="submit">Save</button>
+    </form>
+{% endblock %}
