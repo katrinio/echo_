@@ -4,8 +4,11 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{% block title %}echo_.log{% endblock %}</title>
-        <link rel="stylesheet" href="/static/css/base.css">
-        <link rel="stylesheet" href="/static/css/terminal.css">
+        <link rel="stylesheet" href="/static/css/base.css?v={{ asset_version('css/base.css') }}">
+        <link rel="stylesheet" href="/static/css/forms.css?v={{ asset_version('css/forms.css') }}">
+        <link rel="stylesheet" href="/static/css/timeline.css?v={{ asset_version('css/timeline.css') }}">
+        <link rel="stylesheet" href="/static/css/milestone.css?v={{ asset_version('css/milestone.css') }}">
+        <link rel="stylesheet" href="/static/css/terminal.css?v={{ asset_version('css/terminal.css') }}">
         {% block styles %}{% endblock %}
     </head>
     <body>

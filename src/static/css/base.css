@@ -1,8 +1,9 @@
 /* ===== Базовые переменные и цвета ===== */
 :root {
   --bg: #111;
-  --text: #c7c7c7;
-  --muted: #777;
+  --title: #dcdcdc;
+  --text: #969696;
+  --muted: #6e6e6e;
   --accent: #89b482;
   --border: #2a2a2a;
 }

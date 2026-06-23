@@ -16,6 +16,13 @@ router = APIRouter()
 templates = Jinja2Templates(directory=Path(__file__).parent.parent / "templates")
 
 
+def asset_version(rel_path: str) -> int:
+    return int((Path(__file__).parent.parent / "static" / rel_path).stat().st_mtime)
+
+
+templates.env.globals["asset_version"] = asset_version
+
+
 def _group_by_day(milestones: Sequence[Milestone]) -> OrderedDict[str, list[Milestone]]:
     grouped: dict[str, list[Milestone]] = {}
     for m in milestones:
