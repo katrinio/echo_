@@ -16,7 +16,8 @@ dependencies = [
     "jinja2 (>=3.1.6,<4.0.0)",
     "python-multipart (>=0.0.32,<0.0.33)",
     "sqlalchemy (>=2.0.0,<3.0.0)",
-    "alembic (>=1.18.4,<2.0.0)"
+    "alembic (>=1.18.4,<2.0.0)",
+    "pytest (>=9.1.1,<10.0.0)"
 ]
 
 
@@ -28,5 +29,9 @@ build-backend = "poetry.core.masonry.api"
 dev = [
     "djlint (>=1.39.2,<2.0.0)",
     "mypy (>=1.18.2,<2.0.0)",
-    "ruff (>=0.12.10,<0.13.0)"
+    "ruff (>=0.12.10,<0.13.0)",
+    "pre-commit (>=4.6.0,<5.0.0)"
 ]
+
+[tool.mypy]
+ignore_missing_imports = true

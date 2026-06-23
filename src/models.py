@@ -1,11 +1,11 @@
 from datetime import UTC, date, datetime
-import re
 from typing import Sequence
 
 from sqlalchemy import Date, DateTime, String, select
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column
 
 from src.database import engine
+from src.slug import slug_from_title, slug_with_suffix
 
 
 class Base(DeclarativeBase):
@@ -41,14 +41,14 @@ class Milestone(Base):
         happened_at: date,
         description: str = "",
     ) -> "Milestone":
-        base_slug = cls.slug_from_title(title)
+        base_slug = slug_from_title(title)
         slug = base_slug
 
         with Session(engine) as session:
             suffix = 1
             while session.execute(select(cls).where(cls.slug == slug)).scalars().first() is not None:
                 suffix += 1
-                slug = f"{base_slug}_{suffix}"
+                slug = slug_with_suffix(base_slug, suffix)
 
             milestone = cls(
                 title=title,
@@ -70,10 +70,3 @@ class Milestone(Base):
     def get_by_slug(cls, slug: str) -> "Milestone | None":
         with Session(engine) as session:
             return session.execute(select(cls).where(cls.slug == slug)).scalars().first()
-
-    @staticmethod
-    def slug_from_title(title: str) -> str:
-        slug = title.strip().upper()
-        slug = re.sub(r"[^A-Z0-9]+", "_", slug)
-        slug = re.sub(r"_+", "_", slug)
-        return slug.strip("_")
