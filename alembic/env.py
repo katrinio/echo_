@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from src.models import Base  # noqa: E402
+from src.milestones.models import Base  # noqa: E402
 
 target_metadata = Base.metadata
 

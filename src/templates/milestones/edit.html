@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% block title %}Edit {{ milestone.slug }}{% endblock %}
-{% block styles %}<link rel="stylesheet" href="/static/css/forms.css">{% endblock %}
 {% block content %}
     {% if error %}<p class="form-error">{{ error }}</p>{% endif %}
     <a class="back" href="/milestones/{{ milestone.slug }}">← Back</a>
@@ -17,6 +16,11 @@
                    name="happened_at"
                    value="{{ milestone.happened_at }}"
                    required>
+        </label>
+        <label>
+            Tags
+            <input name="tags"
+                   value="{{ milestone.tags | map(attribute='name') | join(' ') }}">
         </label>
         <label>
             Description

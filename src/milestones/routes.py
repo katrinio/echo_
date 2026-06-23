@@ -9,10 +9,18 @@ from fastapi.templating import Jinja2Templates
 from pydantic import ValidationError
 
 from src.milestones.dto import MilestoneCreateDTO, MilestoneUpdateDTO
-from orm.milestone import Milestone
+from src.milestones.tags import parse_tags
+from src.orm.milestone import Milestone
 
 router = APIRouter()
 templates = Jinja2Templates(directory=Path(__file__).parent.parent / "templates")
+
+
+def asset_version(rel_path: str) -> int:
+    return int((Path(__file__).parent.parent / "static" / rel_path).stat().st_mtime)
+
+
+templates.env.globals["asset_version"] = asset_version
 
 
 def _group_by_day(milestones: Sequence[Milestone]) -> OrderedDict[str, list[Milestone]]:
@@ -51,9 +59,15 @@ def create_milestone(
     title: str = Form(),
     happened_at: date = Form(),
     description: str = Form(default=""),
+    tags: str = Form(default=""),
 ):
     try:
-        dto = MilestoneCreateDTO(title=title, happened_at=happened_at, description=description)
+        dto = MilestoneCreateDTO(
+            title=title,
+            happened_at=happened_at,
+            description=description,
+            tags=tags,
+        )
     except ValidationError as exc:
         return templates.TemplateResponse(
             request,
@@ -66,6 +80,7 @@ def create_milestone(
         title=dto.title,
         happened_at=dto.happened_at,
         description=dto.description,
+        tags=parse_tags(dto.tags),
     )
     return RedirectResponse(url="/", status_code=303)
 
@@ -95,9 +110,15 @@ def update_milestone(
     title: str = Form(),
     happened_at: date = Form(),
     description: str = Form(default=""),
+    tags: str = Form(default=""),
 ):
     try:
-        dto = MilestoneUpdateDTO(title=title, happened_at=happened_at, description=description)
+        dto = MilestoneUpdateDTO(
+            title=title,
+            happened_at=happened_at,
+            description=description,
+            tags=tags,
+        )
     except ValidationError as exc:
         return templates.TemplateResponse(
             request,
@@ -114,5 +135,6 @@ def update_milestone(
         title=dto.title,
         happened_at=dto.happened_at,
         description=dto.description,
+        tags=parse_tags(dto.tags),
     )
     return RedirectResponse(url=f"/milestones/{updated.slug}", status_code=303)

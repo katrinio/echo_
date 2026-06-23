@@ -1,8 +1,5 @@
 {% extends "base.html" %}
 {% block title %}{{ milestone.slug }}{% endblock %}
-{% block styles %}
-    <link rel="stylesheet" href="/static/css/milestone.css">
-{% endblock %}
 {% block content %}
     <nav class="page-actions">
         <a class="back" href="/">← Back</a>
@@ -11,6 +8,13 @@
     <article class="milestone-detail">
         <h1>{{ milestone.title }}</h1>
         <div class="milestone-date">{{ milestone.happened_at }}</div>
+        {% if milestone.tags %}
+            <div class="milestone-tags">
+                {% for tag in milestone.tags %}
+                    <span class="milestone-tag">[{{ tag.name }}]</span>
+                {% endfor %}
+            </div>
+        {% endif %}
         <div class="milestone-description">{{ milestone.description }}</div>
     </article>
 {% endblock %}

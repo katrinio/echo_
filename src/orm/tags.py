@@ -20,4 +20,5 @@ class Tag(Base):
     milestones: Mapped[list["Milestone"]] = relationship(
         secondary=milestone_tags,
         back_populates="tags",
+        lazy="selectin",
     )

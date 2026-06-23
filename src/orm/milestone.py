@@ -27,12 +27,23 @@ class Milestone(Base):
     tags: Mapped[list[Tag]] = relationship(
         secondary=milestone_tags,
         back_populates="milestones",
+        lazy="selectin",
     )
 
     @classmethod
-    def add(cls, *, title: str, slug: str, happened_at: date, description: str = "") -> "Milestone":
+    def add(
+        cls,
+        *,
+        title: str,
+        slug: str,
+        happened_at: date,
+        description: str = "",
+        tags: list[str] | None = None,
+    ) -> "Milestone":
         with Session(engine) as session:
             milestone = cls(title=title, slug=slug, happened_at=happened_at, description=description)
+            if tags:
+                milestone.tags = cls._get_or_create_tags(session, tags)
             session.add(milestone)
             session.commit()
             session.refresh(milestone)
@@ -45,6 +56,7 @@ class Milestone(Base):
         title: str,
         happened_at: date,
         description: str = "",
+        tags: list[str] | None = None,
     ) -> "Milestone":
         base_slug = slug_from_title(title)
         slug = base_slug
@@ -61,6 +73,8 @@ class Milestone(Base):
                 happened_at=happened_at,
                 description=description,
             )
+            if tags:
+                milestone.tags = cls._get_or_create_tags(session, tags)
             session.add(milestone)
             session.commit()
             session.refresh(milestone)
@@ -77,7 +91,15 @@ class Milestone(Base):
             return session.execute(select(cls).where(cls.slug == slug)).scalars().first()
 
     @classmethod
-    def update_by_slug(cls, slug: str, *, title: str, happened_at: date, description: str = "") -> "Milestone":
+    def update_by_slug(
+        cls,
+        slug: str,
+        *,
+        title: str,
+        happened_at: date,
+        description: str = "",
+        tags: list[str] | None = None,
+    ) -> "Milestone":
         with Session(engine) as session:
             milestone = session.scalar(
                 select(cls).where(cls.slug == slug)
@@ -89,8 +111,29 @@ class Milestone(Base):
             milestone.title = title
             milestone.happened_at = happened_at
             milestone.description = description
+            milestone.tags = cls._get_or_create_tags(session, tags or [])
 
             session.commit()
             session.refresh(milestone)
 
             return milestone
+
+    @staticmethod
+    def _get_or_create_tags(session: Session, tag_names: list[str]) -> list[Tag]:
+        if not tag_names:
+            return []
+
+        existing_tags = session.execute(select(Tag).where(Tag.name.in_(tag_names))).scalars().all()
+        existing_by_name = {tag.name: tag for tag in existing_tags}
+
+        tags: list[Tag] = []
+        for tag_name in tag_names:
+            tag = existing_by_name.get(tag_name)
+            if tag is None:
+                tag = Tag(name=tag_name)
+                session.add(tag)
+                existing_by_name[tag_name] = tag
+            tags.append(tag)
+
+        session.flush()
+        return tags

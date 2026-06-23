@@ -1,17 +1,29 @@
 /* ===== Страница отдельной вехи ===== */
 .milestone-detail {
   margin-top: 24px;
+  color: var(--title);
 }
 
 .milestone-date {
   display: block;
-  color: var(--muted);
   margin-bottom: 16px;
+  color: var(--muted);
+  opacity: 0.7;
+}
+
+.milestone-tags {
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.milestone-tag {
+  color: var(--accent);
+  opacity: 0.85;
 }
 
 .milestone-description {
   margin-top: 16px;
-  color: var(--text);
+  color: var(--text, #d6d6d6);
   white-space: pre-wrap;
 }
 
