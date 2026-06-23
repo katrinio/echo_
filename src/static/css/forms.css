@@ -1,0 +1,33 @@
+/* ===== Формы создания и редактирования вехи ===== */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+input,
+textarea {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  color: var(--text);
+  padding: 10px;
+  font: inherit;
+  width: 100%;
+}
+
+/* ===== Кнопка сохранения ===== */
+button[type="submit"] {
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  padding: 10px;
+  font: inherit;
+  cursor: pointer;
+}
+
+/* ===== Сообщение об ошибке валидации ===== */
+.form-error {
+  color: #e06c75;
+  font-size: 14px;
+}
