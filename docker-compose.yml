@@ -1,0 +1,14 @@
+name: echo
+
+services:
+  echo-app:
+    image: echo-app:latest
+    build: .
+    container_name: echo-app
+    restart: unless-stopped
+    ports:
+      - "8001:8000"
+    environment:
+      DATABASE_URL: sqlite:////app/echo.db
+    volumes:
+      - /home/katrin/data/echo/echo.db:/app/echo.db
