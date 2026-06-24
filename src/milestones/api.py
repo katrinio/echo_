@@ -1,5 +1,3 @@
-from collections import OrderedDict
-from collections.abc import Sequence
 from datetime import date
 from pathlib import Path
 
@@ -9,26 +7,21 @@ from fastapi.templating import Jinja2Templates
 from pydantic import ValidationError
 
 from src.milestones.dto import MilestoneCreateDTO, MilestoneUpdateDTO
-from src.milestones.tags import parse_tags
+from src.milestones.helpers import parse_tags
 from src.orm.milestone import Milestone
+from src.milestones.services import group_by_day
 
 router = APIRouter()
-templates = Jinja2Templates(directory=Path(__file__).parent.parent / "templates")
+
+_TEMPLATES_DIR = Path(__file__).parent.parent / "templates"
+templates = Jinja2Templates(directory=_TEMPLATES_DIR)
 
 
-def asset_version(rel_path: str) -> int:
-    return int((Path(__file__).parent.parent / "static" / rel_path).stat().st_mtime)
+def _asset_version(rel_path: str) -> int:
+    return int((_TEMPLATES_DIR.parent / "static" / rel_path).stat().st_mtime)
 
 
-templates.env.globals["asset_version"] = asset_version
-
-
-def _group_by_day(milestones: Sequence[Milestone]) -> OrderedDict[str, list[Milestone]]:
-    grouped: dict[str, list[Milestone]] = {}
-    for m in milestones:
-        day = str(m.happened_at)
-        grouped.setdefault(day, []).append(m)
-    return OrderedDict(sorted(grouped.items(), reverse=True))
+templates.env.globals["asset_version"] = _asset_version
 
 
 def _first_error(exc: ValidationError) -> str:
@@ -40,7 +33,7 @@ def index(request: Request):
     return templates.TemplateResponse(
         request,
         "milestones/index.html",
-        {"grouped_milestones": _group_by_day(Milestone.all())},
+        {"grouped_milestones": group_by_day(Milestone.all())},
     )
 
 
@@ -63,10 +56,7 @@ def create_milestone(
 ):
     try:
         dto = MilestoneCreateDTO(
-            title=title,
-            happened_at=happened_at,
-            description=description,
-            tags=tags,
+            title=title, happened_at=happened_at, description=description, tags=tags
         )
     except ValidationError as exc:
         return templates.TemplateResponse(
@@ -86,7 +76,7 @@ def create_milestone(
 
 
 @router.get("/milestones/{slug}")
-def milestone(request: Request, slug: str):
+def milestone_detail(request: Request, slug: str):
     return templates.TemplateResponse(
         request,
         "milestones/detail.html",
@@ -114,19 +104,13 @@ def update_milestone(
 ):
     try:
         dto = MilestoneUpdateDTO(
-            title=title,
-            happened_at=happened_at,
-            description=description,
-            tags=tags,
+            title=title, happened_at=happened_at, description=description, tags=tags
         )
     except ValidationError as exc:
         return templates.TemplateResponse(
             request,
             "milestones/edit.html",
-            {
-                "milestone": Milestone.get_by_slug(slug),
-                "error": _first_error(exc),
-            },
+            {"milestone": Milestone.get_by_slug(slug), "error": _first_error(exc)},
             status_code=422,
         )
 

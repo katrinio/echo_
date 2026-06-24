@@ -3,15 +3,16 @@ from datetime import date
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
-from src.milestones.tags import parse_tags
-from src.orm.base import Base
+from src.milestones.helpers import parse_tags
+from src.database import Base
 from src.orm.milestone import Milestone
-from src.orm.tags import Tag
+from src.orm.tag import Tag
 
 
 def _setup_engine(tmp_path, monkeypatch):
     engine = create_engine(f"sqlite:///{tmp_path / 'test.db'}")
     monkeypatch.setattr("src.orm.milestone.engine", engine)
+    monkeypatch.setattr("src.orm.tag.engine", engine)
     Base.metadata.create_all(engine)
     return engine
 
@@ -91,3 +92,27 @@ def test_updating_milestone_replaces_tag_relations(tmp_path, monkeypatch):
             "INFRA",
             "VPN",
         ]
+
+
+def test_tag_page_uses_all_milestones_for_tag(tmp_path, monkeypatch):
+    _setup_engine(tmp_path, monkeypatch)
+
+    first = Milestone.create_with_title(
+        title="VPN for friends",
+        happened_at=date(2026, 6, 22),
+        tags=parse_tags("vpn infra"),
+    )
+    second = Milestone.create_with_title(
+        title="Another VPN note",
+        happened_at=date(2026, 6, 21),
+        tags=parse_tags("vpn"),
+    )
+    Milestone.create_with_title(
+        title="Unrelated",
+        happened_at=date(2026, 6, 20),
+        tags=parse_tags("infra"),
+    )
+
+    tag = Tag.get_by_name("VPN")
+    assert tag is not None
+    assert [m.slug for m in tag.milestones] == [first.slug, second.slug]

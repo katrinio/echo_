@@ -1,1 +1,1 @@
-from src.core.app import app  # noqa: F401
+from src.app import app  # noqa: F401

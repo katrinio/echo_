@@ -1,5 +1,5 @@
 [tool.poetry]
-package-mode = false
+packages = [{ include = "src" }]
 
 [project]
 name = "echo-app"
@@ -19,6 +19,10 @@ dependencies = [
     "alembic (>=1.18.4,<2.0.0)",
     "pytest (>=9.1.1,<10.0.0)"
 ]
+
+[project.scripts]
+echo-run = "src.runner:run"
+echo-dev = "src.runner:run_dev"
 
 
 [build-system]

@@ -18,7 +18,12 @@
 
 .milestone-tag {
   color: var(--accent);
+  text-decoration: none;
   opacity: 0.85;
+}
+
+.milestone-tag:hover {
+  text-decoration: underline;
 }
 
 .milestone-description {
@@ -28,7 +33,7 @@
 }
 
 .page-actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }

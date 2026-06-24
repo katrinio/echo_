@@ -1,6 +1,7 @@
+import os
+import sys
 from logging.config import fileConfig
 from pathlib import Path
-import sys
 
 from alembic import context
 from sqlalchemy import engine_from_config, pool
@@ -14,9 +15,20 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from src.milestones.models import Base  # noqa: E402
+from src.database import Base  # noqa: E402
+
+import src.orm.milestone  # noqa: F401, E402
+import src.orm.tag  # noqa: F401, E402
 
 target_metadata = Base.metadata
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    CONFIG.get_main_option("sqlalchemy.url"),
+)
+
+CONFIG.set_main_option("sqlalchemy.url", DATABASE_URL)
+
+print(f"DATABASE_URL={DATABASE_URL}")
 
 
 def run_migrations_offline() -> None:

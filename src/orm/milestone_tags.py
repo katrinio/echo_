@@ -1,7 +1,6 @@
 from sqlalchemy import Column, ForeignKey, Integer, Table
 
-from src.orm.base import Base
-
+from src.database import Base
 
 milestone_tags = Table(
     "milestone_tags",
