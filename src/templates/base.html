@@ -32,7 +32,9 @@
     <body>
         <main>
             {% block content %}{% endblock %}
-            <div class="terminal-bar">
+        </main>
+        <div class="terminal-bar">
+            <div class="terminal-bar-inner">
                 <label class="terminal-row" for="terminal-command">
                     <span class="terminal-prompt">echo_ &gt;</span>
                     <input id="terminal-command"
@@ -45,6 +47,6 @@
                            spellcheck="false">
                 </label>
             </div>
-        </main>
+        </div>
     </body>
 </html>
