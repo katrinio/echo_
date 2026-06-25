@@ -1,11 +1,26 @@
 /* Терминальная строка ввода */
-.terminal-bar {
-  margin-top: 28px;
-  padding-top: 12px;
-  border-top: 1px solid var(--border);
+
+main {
+  padding-bottom: 88px;
 }
 
-.terminal-bar .terminal-row {
+.terminal-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+  z-index: 100;
+}
+
+.terminal-bar-inner {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 12px 18px 24px;
+}
+
+.terminal-row {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -33,4 +48,10 @@
 
 .terminal-input::placeholder {
   color: var(--muted);
+}
+
+@media (width <= 720px) {
+  .terminal-bar-inner {
+    padding: 12px 18px calc(18px + env(safe-area-inset-bottom));
+  }
 }
