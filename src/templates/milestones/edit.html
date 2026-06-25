@@ -19,9 +19,14 @@
         </label>
         <label>
             Tags
-            <input name="tags"
-                   value="{{ milestone.tags | map(attribute='name') | join(' ') }}">
+            <input name="tags" list="tag-options" placeholder="PROJECTS JOY">
         </label>
+
+        <datalist id="tag-options">
+            {% for tag in all_tags %}
+                <option value="{{ tag.name }}">
+            {% endfor %}
+        </datalist>
         <label>
             Description
             <textarea name="description">{{ milestone.description }}</textarea>

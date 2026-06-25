@@ -10,6 +10,7 @@ from src.milestones.dto import MilestoneCreateDTO, MilestoneUpdateDTO
 from src.milestones.helpers import parse_tags
 from src.orm.milestone import Milestone
 from src.milestones.services import group_by_day
+from src.orm.tag import Tag
 
 router = APIRouter()
 
@@ -42,7 +43,10 @@ def new_milestone(request: Request):
     return templates.TemplateResponse(
         request,
         "milestones/new.html",
-        {"today": date.today().isoformat()},
+        {
+            "today": date.today().isoformat(),
+            "all_tags": Tag.all()
+        },
     )
 
 
@@ -89,7 +93,10 @@ def edit_milestone(request: Request, slug: str):
     return templates.TemplateResponse(
         request,
         "milestones/edit.html",
-        {"milestone": Milestone.get_by_slug(slug)},
+        {
+            "milestone": Milestone.get_by_slug(slug),
+            "all_tags": Tag.all()
+        },
     )
 
 

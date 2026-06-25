@@ -24,8 +24,14 @@
         </label>
         <label>
             Tags
-            <input name="tags" placeholder="VPN INFRA FRIENDS">
+            <input name="tags" list="tag-options" placeholder="PROJECTS JOY">
         </label>
+
+        <datalist id="tag-options">
+            {% for tag in all_tags %}
+                <option value="{{ tag.name }}">
+            {% endfor %}
+        </datalist>
         <button type="submit">Save</button>
     </form>
 {% endblock %}
