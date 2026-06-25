@@ -19,26 +19,30 @@ echo_ — личный лог вех. Небольшое веб-приложен
 
 ```
 src/
-  core/
-    app.py          — FastAPI app, монтирование статики, on_startup
-    database.py     — SQLAlchemy engine
+  app.py            — FastAPI app, монтирование статики, подключение роутеров, on_startup
+  database.py       — SQLAlchemy engine
 
   orm/
-    base.py         — DeclarativeBase
-    milestone.py    — ORM-модель Milestone + методы запросов
-    tags.py         — ORM-модель Tag
+    milestone.py     — ORM-модель Milestone + методы запросов
+    tag.py           — ORM-модель Tag + запросы по тегам
     milestone_tags.py — таблица связи many-to-many
 
-  models.py         — публичный реэкспорт всех ORM-моделей
+  web/
+    templates.py     — общий helper для Jinja2Templates
 
-  milestones/
-    dto.py          — MilestoneCreateDTO, MilestoneUpdateDTO (Pydantic)
-    routes.py       — APIRouter, все маршруты /milestones/*
-    slug.py         — генерация и нормализация slug
-
-  tags/
-    api.py          — маршруты /tags и /tags/{tag}
-    services.py     — вспомогательные запросы по тегам
+  features/
+    milestones/
+      api.py        — APIRouter для /, /new, /milestones/*
+      dto.py        — MilestoneCreateDTO, MilestoneUpdateDTO (Pydantic)
+      helpers.py    — нормализация и валидация тегов
+      services.py   — вспомогательные операции с milestones
+      commands.py   — команды терминального help
+    tags/
+      api.py        — маршруты /tags и /tags/{tag}
+      services.py   — вспомогательные запросы по тегам
+    terminal/
+      api.py        — /help и /random
+      commands.py   — список терминальных команд
 
   templates/
     base.html       — базовый шаблон (шапка, терминальная строка)
@@ -47,24 +51,34 @@ src/
       detail.html   — страница отдельной вехи
       new.html      — форма создания
       edit.html     — форма редактирования
+    tags/
+      tags.html     — список тегов
+      tag.html      — страница отдельного тега
+    terminal/
+      help.html     — список доступных терминальных команд
 
   static/css/
     base.css        — переменные, body, layout, ссылки
-    timeline.css    — дерево вех на главной
-    milestone.css   — страница детали вехи
-    terminal.css    — терминальная строка внизу страницы
     forms.css       — формы создания и редактирования
-    tag.css         — список тегов и страница тега
+    pages/
+      timeline.css  — дерево вех на главной
+      milestone.css — страница детали вехи
+    components/
+      terminal.css  — терминальная строка внизу страницы
+      terminal-table.css — терминальные таблицы
 
   static/js/
-    tag-autocomplete.js — автодополнение тегов и обработка terminal input
-    terminal-table.js    — универсальный форматтер терминальных таблиц
+    tag-autocomplete.js     — автодополнение тегов
+    terminal-input.js       — диспетчер терминальных команд
+    terminal-input-mobile.js — мобильное поведение терминального input
+    terminal-table.js       — универсальный форматтер терминальных таблиц
 
-  main.py           — точка входа, реэкспортирует app из core
+  main.py           — точка входа, реэкспортирует app
+  runner.py         — команды запуска `echo-run` и `echo-dev`
+  sitecustomize.py   — настройка import path
 
 tests/
-  test_dto.py             — валидация DTO (11 тестов)
-  test_slug_generation.py — генерация slug (2 теста)
+  test_*.py        — тесты валидации, моделей и маршрутов
 
 docs/
   architecture.md   — этот файл
@@ -82,6 +96,8 @@ docs/
 | POST  | `/milestones/{slug}/edit` | Обновить веху                      |
 | GET   | `/tags`                   | Список всех тегов с количеством    |
 | GET   | `/tags/{tag}`             | Страница тега                      |
+| GET   | `/help`                   | Справка по терминальным командам    |
+| GET   | `/random`                 | Случайная веха                     |
 
 ## Модели данных
 
@@ -142,8 +158,8 @@ Slug генерируется из title автоматически. При ду
 
 Alembic управляет схемой БД. Текущие миграции:
 
-| Ревизия        | Описание                  |
-|----------------|---------------------------|
+| Ревизия        | Описание                    |
+|----------------|-----------------------------|
 | `733b95b80ad6` | Создание таблицы milestones |
 | `4f1b2d9c7a11` | Добавление таблиц tags и milestone_tags |
 
@@ -165,15 +181,18 @@ poetry run alembic stamp 4f1b2d9c7a11
 
 `terminal-table.js` используется для терминальных таблиц по `data-terminal-table` / `data-terminal-table-row` и пересчитывает точки по ширине реального gap между label и value.
 
+`terminal-input.js` содержит диспетчер команд, а `terminal-input-mobile.js` — только мобильное поведение при фокусе в терминальном input.
+
 ## Запуск
 
 ```bash
-PYTHONPATH=src poetry run uvicorn main:app --reload
+poetry run echo-run
 ```
 
 Первый запуск создаёт таблицы автоматически через `on_startup`. После этого нужно проставить ревизию Alembic:
 
 ```bash
+poetry run alembic upgrade head
 poetry run alembic stamp 4f1b2d9c7a11
 ```
 

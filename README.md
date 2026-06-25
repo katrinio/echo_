@@ -5,21 +5,21 @@ running
   <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExOWtuYnBucTE1dmFiOW15MTJ6MjR5ZjA5ZzI1MWcxY2tqZm5jMHIydSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l2JJvlHT0ERLhhhfO/giphy.gif" width="250"/>
 </p>
 
------
+---
+
 A small personal log of things worth remembering.   
 Not a diary.  
 Not a task tracker.  
 Not a second brain.  
 Just milestones.
+
 ---
+
 ### A quick look says more than a long explanation.
 
 <p align="center">
   <img src="docs/screenshots/milestones.png" width="450"/>
 </p>
-
-
-
 
 ---
 ## Why
@@ -46,7 +46,9 @@ Everything can be done from the terminal.
 
 The terminal is a navigation layer, not a shell.
 It opens existing pages and keeps navigation fast.
+
 ---
+
 ## Tech
 
 - FastAPI
@@ -65,4 +67,5 @@ Keyboard-first interface.
 Minimal client-side JavaScript.
 
 ---
+
 For setup, see [Development Guide](docs/development.md)
