@@ -7,7 +7,6 @@ from sqlalchemy.orm import Mapped, Session, mapped_column, relationship
 from sqlalchemy.orm import selectinload
 
 from src.database import Base, engine
-from src.orm.milestone import Milestone
 from src.orm.milestone_tags import milestone_tags
 
 if TYPE_CHECKING:
@@ -35,13 +34,16 @@ class Tag(Base):
 
     @classmethod
     def all_with_counts(cls) -> list[tuple[str, int]]:
+        from src.orm.milestone import Milestone
+
         with Session(engine) as session:
-            return session.execute(
+            rows = session.execute(
                 select(Tag.name, func.count(Milestone.id))
                 .outerjoin(Tag.milestones)
                 .group_by(Tag.id)
                 .order_by(Tag.name)
             ).all()
+            return [(name, int(count)) for name, count in rows]
 
     @classmethod
     def get_by_name(cls, name: str) -> Tag | None:
