@@ -26,9 +26,11 @@ class Tag(Base):
     )
 
     @classmethod
-    def all(cls) -> Sequence[Tag]:
+    def all(cls) -> list["Tag"]:
         with Session(engine) as session:
-            return session.execute(select(cls)).scalars().all()
+            return session.execute(
+                select(cls).order_by(cls.name)
+            ).scalars().all()
 
     @classmethod
     def get_by_name(cls, name: str) -> Tag | None:

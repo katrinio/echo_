@@ -40,14 +40,14 @@ def index(request: Request):
 
 @router.get("/new")
 def new_milestone(request: Request):
-    return templates.TemplateResponse(
-        request,
-        "milestones/new.html",
-        {
-            "today": date.today().isoformat(),
-            "all_tags": Tag.all()
-        },
-    )
+        return templates.TemplateResponse(
+            request,
+            "milestones/new.html",
+            {
+                "today": date.today().isoformat(),
+                "all_tags": Tag.all(),
+            },
+        )
 
 
 @router.post("/new")
@@ -66,7 +66,11 @@ def create_milestone(
         return templates.TemplateResponse(
             request,
             "milestones/new.html",
-            {"error": _first_error(exc), "today": date.today().isoformat()},
+            {
+                "error": _first_error(exc),
+                "today": date.today().isoformat(),
+                "all_tags": Tag.all(),
+            },
             status_code=422,
         )
 
@@ -90,14 +94,14 @@ def milestone_detail(request: Request, slug: str):
 
 @router.get("/milestones/{slug}/edit")
 def edit_milestone(request: Request, slug: str):
-    return templates.TemplateResponse(
-        request,
-        "milestones/edit.html",
-        {
-            "milestone": Milestone.get_by_slug(slug),
-            "all_tags": Tag.all()
-        },
-    )
+        return templates.TemplateResponse(
+            request,
+            "milestones/edit.html",
+            {
+                "milestone": Milestone.get_by_slug(slug),
+                "all_tags": Tag.all(),
+            },
+        )
 
 
 @router.post("/milestones/{slug}/edit")
@@ -117,7 +121,11 @@ def update_milestone(
         return templates.TemplateResponse(
             request,
             "milestones/edit.html",
-            {"milestone": Milestone.get_by_slug(slug), "error": _first_error(exc)},
+            {
+                "milestone": Milestone.get_by_slug(slug),
+                "error": _first_error(exc),
+                "all_tags": Tag.all(),
+            },
             status_code=422,
         )
 

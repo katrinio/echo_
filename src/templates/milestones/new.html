@@ -24,8 +24,16 @@
         </label>
         <label>
             Tags
-            <input name="tags" list="tag-options" placeholder="PROJECTS JOY">
+            <input
+                id="tags-input"
+                name="tags"
+                placeholder="PROJECTS JOY"
+                autocomplete="off"
+                data-tags="{{ all_tags | map(attribute='name') | join(',') }}"
+            >
         </label>
+
+        <div id="tag-suggestions" class="tag-suggestions"></div>
 
         <datalist id="tag-options">
             {% for tag in all_tags %}
