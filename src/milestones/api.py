@@ -10,7 +10,6 @@ from src.milestones.dto import MilestoneCreateDTO, MilestoneUpdateDTO
 from src.orm.milestone import Milestone
 from src.milestones.services import group_by_day
 from src.orm.tag import Tag
-from src.milestones.commands import COMMANDS
 
 router = APIRouter()
 
@@ -82,14 +81,6 @@ def create_milestone(
     )
     return RedirectResponse(url="/", status_code=303)
 
-@router.get("/help")
-def help_page(request: Request):
-    return templates.TemplateResponse(
-        request,
-        "milestones/help.html",
-        {"commands": COMMANDS},
-    )
-
 @router.get("/milestones/{slug}")
 def milestone_detail(request: Request, slug: str):
     return templates.TemplateResponse(
@@ -144,4 +135,3 @@ def update_milestone(
         tags=dto.tags.split() if dto.tags else [],
     )
     return RedirectResponse(url=f"/milestones/{updated.slug}", status_code=303)
-
