@@ -25,6 +25,11 @@ COMMANDS = [
         example="tags",
     ),
     CommandHelp(
+        name="tag {TAG_NAME}",
+        description="Milestones by Tag",
+        example="tag TRAVEL",
+    ),
+    CommandHelp(
         name="random",
         description="Random milestone",
         example="random",
