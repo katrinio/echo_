@@ -7,7 +7,9 @@
     </header>
     <section class="terminal-table" data-terminal-table>
         {% for tag, count in tags %}
-            <a class="terminal-table-row" href="/tags/{{ tag }}" data-terminal-table-row>
+            <a class="terminal-table-row"
+               href="/tags/{{ tag }}"
+               data-terminal-table-row>
                 <span class="terminal-table-label" data-terminal-label>{{ tag }}</span>
                 <span class="terminal-table-dots" data-terminal-dots></span>
                 <span class="terminal-table-value" data-terminal-value>{{ count }}</span>
