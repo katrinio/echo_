@@ -8,13 +8,13 @@
     <article class="milestone-detail">
         <h1>{{ milestone.title }}</h1>
         <div class="milestone-date">{{ milestone.happened_at }}</div>
-            {% if milestone.tags %}
-                <div class="milestone-tags">
-                    {% for tag in milestone.tags %}
-                        <a class="milestone-tag" href="/tags/{{ tag.name }}">[{{ tag.name }}]</a>
-                    {% endfor %}
-                </div>
-            {% endif %}
+        {% if milestone.tags %}
+            <div class="milestone-tags">
+                {% for tag in milestone.tags %}
+                    <a class="milestone-tag" href="/tags/{{ tag.name }}">[{{ tag.name }}]</a>
+                {% endfor %}
+            </div>
+        {% endif %}
         <div class="milestone-description">{{ milestone.description }}</div>
     </article>
 {% endblock %}

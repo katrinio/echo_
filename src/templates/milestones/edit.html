@@ -19,27 +19,23 @@
         </label>
         <label>
             Tags
-            <input
-                id="tags-input"
-                name="tags"
-                placeholder="PROJECTS JOY"
-                autocomplete="off"
-                value="{{ milestone.tags | map(attribute='name') | join(' ') }}"
-                data-tags='{{ all_tags | map(attribute="name") | join(",") }}'
-            >
+            <input id="tags-input"
+                   name="tags"
+                   placeholder="PROJECTS JOY"
+                   autocomplete="off"
+                   value="{{ milestone.tags | map(attribute='name') | join(' ') }}"
+                   data-tags='{{ all_tags | map(attribute="name") | join(",") }}'>
         </label>
-
         <div id="tag-suggestions" class="tag-suggestions"></div>
-
         <datalist id="tag-options">
             {% for tag in all_tags %}
                 <option value="{{ tag.name }}">
-            {% endfor %}
-        </datalist>
-        <label>
-            Description
-            <textarea name="description">{{ milestone.description }}</textarea>
-        </label>
-        <button type="submit">Save</button>
-    </form>
-{% endblock %}
+                {% endfor %}
+            </datalist>
+            <label>
+                Description
+                <textarea name="description">{{ milestone.description }}</textarea>
+            </label>
+            <button type="submit">Save</button>
+        </form>
+    {% endblock %}

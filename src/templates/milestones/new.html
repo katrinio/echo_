@@ -24,22 +24,18 @@
         </label>
         <label>
             Tags
-            <input
-                id="tags-input"
-                name="tags"
-                placeholder="PROJECTS JOY"
-                autocomplete="off"
-                data-tags="{{ all_tags | map(attribute='name') | join(',') }}"
-            >
+            <input id="tags-input"
+                   name="tags"
+                   placeholder="PROJECTS JOY"
+                   autocomplete="off"
+                   data-tags="{{ all_tags | map(attribute='name') | join(',') }}">
         </label>
-
         <div id="tag-suggestions" class="tag-suggestions"></div>
-
         <datalist id="tag-options">
             {% for tag in all_tags %}
                 <option value="{{ tag.name }}">
-            {% endfor %}
-        </datalist>
-        <button type="submit">Save</button>
-    </form>
-{% endblock %}
+                {% endfor %}
+            </datalist>
+            <button type="submit">Save</button>
+        </form>
+    {% endblock %}

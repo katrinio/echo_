@@ -1,4 +1,11 @@
 repos:
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v9.39.1
+    hooks:
+      - id: eslint
+        name: Eslint
+        files: ^src/static/js/.*\.js$
+
   - repo: local
     hooks:
       - id: ruff-check
@@ -32,9 +39,9 @@ repos:
         language: system
         pass_filenames: false
 
-      - id: poetry-lock-check
-        name: Poetry lock check
-        entry: poetry lock --check
+      - id: poetry-check
+        name: Poetry check
+        entry: poetry check
         language: system
         files: ^pyproject\.toml$
         pass_filenames: false

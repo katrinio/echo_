@@ -26,7 +26,7 @@ class Tag(Base):
     )
 
     @classmethod
-    def all(cls) -> list["Tag"]:
+    def all(cls) -> Sequence["Tag"]:
         with Session(engine) as session:
             return session.execute(
                 select(cls).order_by(cls.name)
