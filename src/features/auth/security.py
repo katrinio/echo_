@@ -1,39 +1,24 @@
-import os
 import secrets
 from datetime import timedelta
 
-from fastapi import Form, Request
+from fastapi import Request
 from fastapi.responses import RedirectResponse
 from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 
+from src.config import settings
 
 SESSION_COOKIE_NAME = "echo_session"
 SESSION_MAX_AGE_SECONDS = int(timedelta(days=30).total_seconds())
 
 
-def is_production() -> bool:
-    return os.getenv("ENVIRONMENT") == "production"
-
-def get_session_secret_key() -> str:
-    secret_key = os.getenv("SESSION_SECRET_KEY")
-    if not secret_key:
+def _get_serializer() -> URLSafeTimedSerializer:
+    if not settings.session_secret_key:
         raise RuntimeError("SESSION_SECRET_KEY is not configured")
-    return secret_key
-
-
-def get_echo_password() -> str:
-    password = os.getenv("ECHO_PASSWORD")
-    if not password:
-        raise RuntimeError("ECHO_PASSWORD is not configured")
-    return password
-
-
-def get_serializer() -> URLSafeTimedSerializer:
-    return URLSafeTimedSerializer(get_session_secret_key())
+    return URLSafeTimedSerializer(settings.session_secret_key)
 
 
 def create_session_token() -> str:
-    return get_serializer().dumps({"authenticated": True})
+    return _get_serializer().dumps({"authenticated": True})
 
 
 def is_authenticated(request: Request) -> bool:
@@ -42,10 +27,7 @@ def is_authenticated(request: Request) -> bool:
         return False
 
     try:
-        data = get_serializer().loads(
-            token,
-            max_age=SESSION_MAX_AGE_SECONDS,
-        )
+        data = _get_serializer().loads(token, max_age=SESSION_MAX_AGE_SECONDS)
     except (BadSignature, SignatureExpired):
         return False
 
@@ -55,16 +37,13 @@ def is_authenticated(request: Request) -> bool:
 def require_auth(request: Request) -> RedirectResponse | None:
     if is_authenticated(request):
         return None
-
-    return RedirectResponse(
-        url=f"/login?next={request.url.path}",
-        status_code=303,
-    )
+    return RedirectResponse(url=f"/login?next={request.url.path}", status_code=303)
 
 
 def verify_password(password: str) -> bool:
-    expected_password = get_echo_password()
-    return secrets.compare_digest(password, expected_password)
+    if not settings.echo_password:
+        raise RuntimeError("ECHO_PASSWORD is not configured")
+    return secrets.compare_digest(password, settings.echo_password)
 
 
 def create_login_response(next_url: str) -> RedirectResponse:
@@ -74,7 +53,7 @@ def create_login_response(next_url: str) -> RedirectResponse:
         value=create_session_token(),
         max_age=SESSION_MAX_AGE_SECONDS,
         httponly=True,
-        secure=is_production(),
+        secure=settings.is_production,
         samesite="lax",
     )
     return response
