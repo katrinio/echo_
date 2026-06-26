@@ -44,13 +44,20 @@ if (input && suggestions) {
     const [start, end] = getTokenRange(value, cursor);
     const currentToken = value.slice(start, cursor).trim().toUpperCase();
 
-    suggestions.innerHTML = "";
-
     if (!currentToken) {
+      hideAutocompletePopup(suggestions);
       return;
     }
 
     const matches = tags.filter((tag) => tag.startsWith(currentToken)).slice(0, 5);
+
+    if (!matches.length) {
+      hideAutocompletePopup(suggestions);
+      return;
+    }
+
+    suggestions.innerHTML = "";
+    showAutocompletePopup(suggestions);
 
     for (const tag of matches) {
       const option = document.createElement("button");
@@ -64,7 +71,7 @@ if (input && suggestions) {
         const separator = normalizeSpacing(value, end);
 
         input.value = `${left}${tag}${separator}${right}`.replace(/\s+,/g, ",");
-        suggestions.innerHTML = "";
+        hideAutocompletePopup(suggestions);
         input.focus();
       });
 

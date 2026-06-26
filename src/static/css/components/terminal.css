@@ -55,3 +55,34 @@ main {
     padding: 12px 18px calc(18px + env(safe-area-inset-bottom));
   }
 }
+
+.terminal-suggestions {
+    margin-top: 0.4rem;
+    padding-left: 0;
+    font-family: inherit;
+    font-size: inherit;
+}
+
+.terminal-suggestion {
+    display: grid;
+    grid-template-columns: 10ch 1fr;
+    gap: 1rem;
+    padding: 0.15rem 0;
+    cursor: pointer;
+}
+
+.terminal-suggestion-command {
+    color: var(--text);
+}
+
+.terminal-suggestion-description {
+    color: var(--muted);
+}
+
+.terminal-suggestion.is-active .terminal-suggestion-command::before {
+    content: "> ";
+}
+
+.terminal-suggestion:not(.is-active) .terminal-suggestion-command::before {
+    content: "  ";
+}

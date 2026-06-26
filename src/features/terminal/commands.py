@@ -6,6 +6,11 @@ class CommandHelp:
     name: str
     description: str
     example: str | None = None
+    command: str | None = None
+
+    @property
+    def autocomplete_value(self) -> str:
+        return self.command or self.name.split()[0]
 
 
 COMMANDS = [
@@ -31,8 +36,9 @@ COMMANDS = [
     ),
     CommandHelp(
         name="tag {tag_name}",
-        description="Milestones by Tag",
+        description="Milestones by tag",
         example="tag TRAVEL",
+        command="tag",
     ),
     CommandHelp(
         name="random",
