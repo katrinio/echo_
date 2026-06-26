@@ -84,3 +84,11 @@ function handleAutocompleteKeydown(event, matches, state, options) {
 
   return false;
 }
+
+window.createAutocompleteState = createAutocompleteState;
+window.normalizeAutocompleteIndex = normalizeAutocompleteIndex;
+window.getActiveAutocompleteItem = getActiveAutocompleteItem;
+window.moveAutocompleteIndex = moveAutocompleteIndex;
+window.showAutocompletePopup = showAutocompletePopup;
+window.hideAutocompletePopup = hideAutocompletePopup;
+window.handleAutocompleteKeydown = handleAutocompleteKeydown;
