@@ -24,11 +24,11 @@ import src.orm.milestone  # noqa: F401, E402
 import src.orm.tag  # noqa: F401, E402
 
 target_metadata = Base.metadata
-DATABASE_URL = os.getenv(
-    "DATABASE_URL",
-    settings.database_url or CONFIG.get_main_option("sqlalchemy.url"),
-)
+DATABASE_URL = os.getenv("DATABASE_URL")
+if DATABASE_URL is None:
+    DATABASE_URL = settings.database_url or CONFIG.get_main_option("sqlalchemy.url")
 
+assert DATABASE_URL is not None
 CONFIG.set_main_option("sqlalchemy.url", DATABASE_URL)
 
 print(f"DATABASE_URL={DATABASE_URL}")

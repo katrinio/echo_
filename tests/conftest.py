@@ -1,9 +1,6 @@
 from pathlib import Path
+import importlib
 import sys
-
-ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
 
 import pytest
 from sqlalchemy import create_engine
@@ -14,9 +11,13 @@ from src.app import app
 from src.database import Base
 from src.config import settings
 
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 # Импортируем модели чтобы они зарегистрировались в Base.metadata до create_all.
-import src.orm.milestone  # noqa: F401
-import src.orm.tag  # noqa: F401
+importlib.import_module("src.orm.milestone")
+importlib.import_module("src.orm.tag")
 
 
 @pytest.fixture(scope="session", autouse=True)

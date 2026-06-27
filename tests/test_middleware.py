@@ -1,4 +1,4 @@
-from src.features.auth.security import create_session_token, SESSION_COOKIE_NAME
+from src.features.auth.security import SESSION_COOKIE_NAME
 
 
 class TestAuthMiddleware:
