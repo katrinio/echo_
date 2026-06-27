@@ -29,7 +29,7 @@ repos:
 
       - id: stylelint
         name: Stylelint
-        entry: npx stylelint
+        entry: ./node_modules/.bin/stylelint
         language: system
         files: ^src/static/.*\.css$
 
@@ -44,4 +44,11 @@ repos:
         entry: poetry check
         language: system
         files: ^pyproject\.toml$
+        pass_filenames: false
+
+      - id: js-tests
+        name: JS Tests
+        entry: npm run test:js
+        language: system
+        files: ^(src/static/js/.*\.js|tests/js/.*\.test\.js)$
         pass_filenames: false
