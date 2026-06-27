@@ -116,16 +116,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     const matches = getCurrentMatches();
     const suggestionsVisible = !container.hidden && matches.length > 0;
 
-    // Когда подсказки видны — автокомплит управляет стрелками.
-    // Когда подсказок нет — стрелки переключают историю команд.
-    if (!suggestionsVisible && (event.key === "ArrowUp" || event.key === "ArrowDown")) {
+    if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+      // Стрелки всегда останавливаются здесь — страница не должна двигаться.
       event.preventDefault();
-      const direction = event.key === "ArrowUp" ? "up" : "down";
-      const value = navigateHistory(terminalHistoryState, direction);
-      if (value !== null) {
-        input.value = value;
+      event.stopPropagation();
+
+      if (!suggestionsVisible) {
+        // Подсказок нет — переключаем историю.
+        const direction = event.key === "ArrowUp" ? "up" : "down";
+        const value = navigateHistory(terminalHistoryState, direction);
+        if (value !== null) {
+          input.value = value;
+        }
+        return;
       }
-      return;
     }
 
     handleAutocompleteKeydown(event, matches, terminalAutocompleteState, {

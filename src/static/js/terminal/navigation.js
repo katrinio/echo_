@@ -76,7 +76,11 @@ function openSelectedRow() {
 }
 
 document.addEventListener("keydown", (event) => {
-  // Глобальная навигация не должна мешать редактированию текста.
+  // Когда терминал в фокусе — вся клавиатурная навигация по странице отключена.
+  if (isTerminalInput(event.target)) {
+    return;
+  }
+
   if (event.key === "ArrowDown") {
     event.preventDefault();
     moveSelection("down");
@@ -88,7 +92,7 @@ document.addEventListener("keydown", (event) => {
   }
 
   if (event.key === "Enter") {
-    if (isEditableElement(event.target) || isTerminalInput(event.target)) {
+    if (isEditableElement(event.target)) {
       return;
     }
 
@@ -96,6 +100,13 @@ document.addEventListener("keydown", (event) => {
   }
 
   if (event.key === "Escape") {
+    clearSelection();
+  }
+});
+
+// При фокусе на терминал снимаем выделение со страницы.
+document.addEventListener("focusin", (event) => {
+  if (isTerminalInput(event.target)) {
     clearSelection();
   }
 });
