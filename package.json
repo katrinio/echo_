@@ -1,16 +1,60 @@
 {
   "name": "echo-app",
   "private": true,
+
   "scripts": {
     "test:js": "vitest run",
     "test:js:watch": "vitest",
     "test:js:coverage": "vitest run --coverage"
   },
+
   "devDependencies": {
     "@vitest/coverage-v8": "^2.1.9",
     "jsdom": "^26.0.0",
     "stylelint": "^16.0.0",
     "stylelint-config-standard": "^37.0.0",
     "vitest": "^2.0.0"
+  },
+
+  "stylelint": {
+    "extends": ["stylelint-config-standard"]
+  },
+
+  "release": {
+    "branches": ["main"],
+    "tagFormat": "v${version}",
+    "plugins": [
+      [
+        "@semantic-release/commit-analyzer",
+        {
+          "preset": "conventionalcommits",
+          "releaseRules": [
+            { "type": "feat", "release": "minor" },
+            { "type": "fix", "release": "patch" },
+            { "breaking": true, "release": "major" },
+            { "type": "refactor", "release": false },
+            { "type": "docs", "release": false },
+            { "type": "test", "release": false },
+            { "type": "ci", "release": false }
+          ]
+        }
+      ],
+      [
+        "@semantic-release/release-notes-generator",
+        {
+          "preset": "conventionalcommits"
+        }
+      ],
+      [
+        "@semantic-release/github",
+        {
+          "draft": true,
+          "name": "echo_ > v${nextRelease.version}",
+          "successComment": false,
+          "labels": false,
+          "releasedLabels": false
+        }
+      ]
+    ]
   }
 }
