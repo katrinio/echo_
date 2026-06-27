@@ -25,6 +25,14 @@ function renderSelection(rows) {
   rows.forEach((row, index) => {
     row.classList.toggle("is-selected", index === selectedIndex);
   });
+
+  const selectedRow = rows[selectedIndex];
+  if (selectedRow) {
+    selectedRow.scrollIntoView({
+      block: "center",
+      inline: "nearest",
+    });
+  }
 }
 
 function moveSelection(direction) {
