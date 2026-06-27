@@ -31,6 +31,8 @@ src/
     milestone.py      — ORM-модель Milestone + методы запросов
     tag.py            — ORM-модель Tag + запросы
     milestone_tags.py — таблица связи many-to-many
+    alembic.ini       — конфиг Alembic
+    migrations/       — env.py, script.py.mako, versions/
 
   web/
     templates.py      — общий Jinja2Templates, asset_version, settings в контексте
@@ -181,7 +183,7 @@ poetry run alembic -c src/orm/alembic.ini upgrade head
 poetry run echo-run
 ```
 
-Таблицы создаются автоматически при первом запуске через `on_startup`. После — проставить ревизию:
+Таблицы создаются автоматически при первом запуске через `lifespan`. После — проставить ревизию:
 
 ```bash
 poetry run alembic -c src/orm/alembic.ini stamp 4f1b2d9c7a11
@@ -189,6 +191,10 @@ poetry run alembic -c src/orm/alembic.ini stamp 4f1b2d9c7a11
 
 ## Качество кода
 
-Pre-commit хуки: Ruff, MyPy, djLint, Stylelint, ESLint, pytest, poetry check.  
-Линтеры (кроме MyPy и pytest) — только на изменённые файлы.  
-CI: те же проверки + отдельный job для миграций.
+Pre-commit хуки: Ruff, MyPy, djLint, Stylelint, ESLint, pytest, JS-тесты (Vitest), poetry check, alembic check.  
+Линтеры (кроме MyPy и pytest) — только на изменённые файлы.
+
+CI (`.github/workflows/`):
+- `quality_gates.yml` — Python style, Frontend style, Python tests, JS tests, Migrations
+- `smoke.yml` — запускается после quality gates, поднимает сервер и проверяет `/login`
+- `release.yml` — semantic-release, публикует черновик релиза при пуше в main

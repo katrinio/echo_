@@ -4,7 +4,10 @@
 
 ```bash
 poetry install
+npm install
 ```
+
+Copy `.env.example` to `.env` and fill in the required values.
 
 ### Run
 
@@ -13,10 +16,6 @@ poetry run echo-run
 ```
 
 Open the app at `http://127.0.0.1:8000`.
-The app reads `.env` automatically through `pydantic-settings`.
-
-The local database defaults to `echo.db` in the project root. Set `DATABASE_URL`
-in the environment only when you need to override that behavior.
 
 ### Database
 
@@ -32,41 +31,33 @@ Seed local data:
 poetry run python scripts/seed_echo.py
 ```
 
-Run this from the project root. If you are already inside `docs/`, the path is
-`../scripts/seed_echo.py`.
-
 If the database already has tables and you need to align Alembic with the current schema:
 
 ```bash
 poetry run alembic -c src/orm/alembic.ini stamp 4f1b2d9c7a11
 ```
 
-### JS dependencies
+### Tests
 
 ```bash
-npm install
+# Python
+poetry run pytest
+poetry run pytest --cov=src --cov-report=html  # with coverage
+
+# JS
+npm run test:js
+npm run test:js:coverage  # with coverage, opens htmlcov equivalent in coverage/
 ```
-
-### JS tests
-
-```bash
-npm run test:js        # run once
-npm run test:js:watch  # watch mode
-```
-
-Tests live in `tests/js/`. They use [Vitest](https://vitest.dev/) with jsdom.
 
 ### Checks
 
 ```bash
 # Python
-poetry run pytest
 poetry run ruff check src
 poetry run mypy src
 poetry run djlint src/templates --check
 
 # JS
-npm run test:js
-npx stylelint "src/static/css/**/*.css"
+./node_modules/.bin/stylelint "src/static/css/**/*.css"
 npx eslint "src/static/js/**/*.js"
 ```
