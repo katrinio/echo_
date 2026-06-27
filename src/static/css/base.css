@@ -5,6 +5,7 @@
   --text: #969696;
   --muted: #6e6e6e;
   --accent: #89b482;
+  --selected: #91aa8a;
   --border: #2a2a2a;
 }
 
@@ -75,4 +76,3 @@ a:active {
   color: var(--accent);
   margin-bottom: 28px;
 }
-

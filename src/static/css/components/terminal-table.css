@@ -13,7 +13,7 @@
 }
 
 .terminal-table-row.is-selected {
-  color: #9ac68f;
+  color: var(--selected);
 }
 
 .terminal-table-label {

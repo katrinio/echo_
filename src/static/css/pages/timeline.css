@@ -34,7 +34,7 @@
 }
 
 .tree-item.is-selected {
-  color: #9ac68f;
+  color: var(--selected);
 }
 
 .tree-item.is-selected .tree-branch,
