@@ -57,6 +57,7 @@ if (terminalInput) {
     const result = await handler(args.join(" "));
 
     if (typeof result === "string" && result.startsWith("/")) {
+      saveToHistory(raw);
       window.location.href = result;
       return;
     }

@@ -1,7 +1,7 @@
 function createAutocompleteState() {
-  // Хранит текущий индекс выбранной подсказки.
+  // -1 означает "ничего не выбрано".
   return {
-    activeIndex: 0,
+    activeIndex: -1,
   };
 }
 
@@ -14,7 +14,7 @@ function normalizeAutocompleteIndex(index, length) {
 }
 
 function getActiveAutocompleteItem(matches, state) {
-  if (!matches.length) {
+  if (!matches.length || state.activeIndex === -1) {
     return null;
   }
 
@@ -23,7 +23,13 @@ function getActiveAutocompleteItem(matches, state) {
 }
 
 function moveAutocompleteIndex(state, delta, length) {
-  state.activeIndex = normalizeAutocompleteIndex(state.activeIndex + delta, length);
+  if (state.activeIndex === -1) {
+    // Из состояния "ничего не выбрано" ArrowDown идёт к первому элементу,
+    // ArrowUp остаётся на месте.
+    state.activeIndex = delta > 0 ? 0 : -1;
+  } else {
+    state.activeIndex = normalizeAutocompleteIndex(state.activeIndex + delta, length);
+  }
   return state.activeIndex;
 }
 
