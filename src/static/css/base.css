@@ -21,10 +21,12 @@ body {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 16px;
   line-height: 1.6;
+  min-height: 100vh;
 }
 
 /* ===== Общая раскладка страницы ===== */
 main {
+  min-height: 100vh;
   max-width: 680px;
   margin: 0 auto;
   padding: 24px 18px;
