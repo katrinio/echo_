@@ -220,9 +220,6 @@ __marimo__/
 /node_modules/
 /.idea/
 /.claude/
-/echo.db
-/user_notes/DEV.md
-/user_notes/BACKLOG.md
 *.db
-/user_notes/
+/user_data/
 /scripts/seed_echo.py
