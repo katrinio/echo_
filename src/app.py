@@ -22,7 +22,12 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(
+    lifespan=lifespan,
+    docs_url=None,
+    redoc_url=None,
+    openapi_url=None,
+)
 app.add_middleware(AuthMiddleware)
 app.include_router(auth_router)
 app.mount("/static", StaticFiles(directory=SRC / "static"), name="static")

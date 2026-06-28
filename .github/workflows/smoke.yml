@@ -1,4 +1,4 @@
-name: 💨 Smoke Test
+тname: 💨 Smoke Test
 
 on:
   workflow_run:
@@ -28,28 +28,5 @@ jobs:
       - name: Install dependencies
         run: poetry install --no-interaction
 
-      - name: Run migrations
-        run: poetry run alembic -c src/orm/alembic.ini upgrade head
-
-      - name: Start server
-        run: poetry run uvicorn src.app:app --host 127.0.0.1 --port 8000 &
-
-      - name: Wait for server
-        run: |
-          for i in $(seq 1 10); do
-            curl -sf http://127.0.0.1:8000/login && exit 0
-            sleep 1
-          done
-          echo "Server did not start in time" && exit 1
-
-      - name: Check login page responds
-        run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8000/login)
-          echo "GET /login → $STATUS"
-          [ "$STATUS" = "200" ]
-
-      - name: Check protected route redirects to login
-        run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" -L http://127.0.0.1:8000/)
-          echo "GET / → $STATUS"
-          [ "$STATUS" = "200" ]
+      - name: Run middleware tests
+        run: poetry run pytest tests/test_middleware.py

@@ -6,9 +6,16 @@ class TestAuthMiddleware:
         response = client.get("/login", follow_redirects=False)
         assert response.status_code == 200
 
-    def test_logout_is_public(self, client):
+    def test_logout_requires_auth(self, client):
+        client.cookies.clear()
         response = client.get("/logout", follow_redirects=False)
         assert response.status_code == 303
+        assert "/login" in response.headers["location"]
+
+    def test_health_is_public(self, client):
+        response = client.get("/health", follow_redirects=False)
+        assert response.status_code == 200
+        assert "I am fine, thanks." in response.text
 
     def test_static_files_are_public(self, client):
         # Статика не блокируется миддлварой, даже без авторизации.
@@ -18,6 +25,30 @@ class TestAuthMiddleware:
     def test_protected_route_redirects_to_login(self, client):
         client.cookies.clear()
         response = client.get("/", follow_redirects=False)
+        assert response.status_code == 303
+        assert "/login" in response.headers["location"]
+
+    def test_search_redirects_to_login_without_cookie(self, client):
+        client.cookies.clear()
+        response = client.get("/search?q=test", follow_redirects=False)
+        assert response.status_code == 303
+        assert "/login" in response.headers["location"]
+
+    def test_detail_redirects_to_login_without_cookie(self, client):
+        client.cookies.clear()
+        response = client.get("/milestones/some-slug", follow_redirects=False)
+        assert response.status_code == 303
+        assert "/login" in response.headers["location"]
+
+    def test_create_redirects_to_login_without_cookie(self, client):
+        client.cookies.clear()
+        response = client.post("/new", data={}, follow_redirects=False)
+        assert response.status_code == 303
+        assert "/login" in response.headers["location"]
+
+    def test_edit_redirects_to_login_without_cookie(self, client):
+        client.cookies.clear()
+        response = client.post("/milestones/some-slug/edit", data={}, follow_redirects=False)
         assert response.status_code == 303
         assert "/login" in response.headers["location"]
 
@@ -35,3 +66,15 @@ class TestAuthMiddleware:
         response = client.get("/", follow_redirects=False)
         assert response.status_code == 303
         client.cookies.clear()
+
+
+class TestSmokeCoverage:
+    def test_login_page_responds(self, client):
+        response = client.get("/login", follow_redirects=False)
+        assert response.status_code == 200
+
+    def test_root_redirects_without_auth(self, client):
+        client.cookies.clear()
+        response = client.get("/", follow_redirects=False)
+        assert response.status_code == 303
+        assert "/login" in response.headers["location"]

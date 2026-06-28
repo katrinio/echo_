@@ -1,6 +1,8 @@
+from pathlib import Path
 from typing import Annotated
 
 from fastapi import APIRouter, Form, Query, Request
+from fastapi.responses import FileResponse
 
 from .security import (
     create_login_response,
@@ -10,6 +12,21 @@ from .security import (
 from ...web.templates import templates
 
 router = APIRouter()
+
+_STATIC = Path(__file__).parent.parent.parent / "static"
+
+
+@router.get("/robots.txt", include_in_schema=False)
+def robots():
+    return FileResponse(_STATIC / "robots.txt", media_type="text/plain")
+
+
+@router.get("/health")
+def health(request: Request):
+    return templates.TemplateResponse(
+        request,
+        "auth/health.html",
+    )
 
 
 @router.get("/login")

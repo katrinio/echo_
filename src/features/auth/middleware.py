@@ -9,6 +9,7 @@ PUBLIC_PATHS = {
     "/login",
     "/logout",
     "/health",
+    "/robots.txt",
 }
 
 
