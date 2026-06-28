@@ -15,7 +15,7 @@ class TestAuthMiddleware:
     def test_health_is_public(self, client):
         response = client.get("/health", follow_redirects=False)
         assert response.status_code == 200
-        assert response.json() == {"ok": True}
+        assert "I am fine, thanks." in response.text
 
     def test_static_files_are_public(self, client):
         # Статика не блокируется миддлварой, даже без авторизации.

@@ -1,7 +1,6 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Form, Query, Request
-from fastapi.responses import JSONResponse
 
 from .security import (
     create_login_response,
@@ -14,8 +13,11 @@ router = APIRouter()
 
 
 @router.get("/health")
-def health():
-    return JSONResponse({"ok": True})
+def health(request: Request):
+    return templates.TemplateResponse(
+        request,
+        "auth/health.html",
+    )
 
 
 @router.get("/login")
