@@ -61,5 +61,10 @@ def create_login_response(next_url: str) -> RedirectResponse:
 
 def create_logout_response() -> RedirectResponse:
     response = RedirectResponse(url="/login", status_code=303)
-    response.delete_cookie(SESSION_COOKIE_NAME)
+    # Атрибуты должны совпадать с теми что при установке — иначе браузер может проигнорировать удаление.
+    response.delete_cookie(
+        SESSION_COOKIE_NAME,
+        httponly=True,
+        samesite="lax",
+    )
     return response
