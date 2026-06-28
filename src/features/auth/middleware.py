@@ -7,7 +7,6 @@ from src.features.auth.security import is_authenticated
 
 PUBLIC_PATHS = {
     "/login",
-    "/logout",
     "/health",
 }
 

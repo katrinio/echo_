@@ -6,9 +6,16 @@ class TestAuthMiddleware:
         response = client.get("/login", follow_redirects=False)
         assert response.status_code == 200
 
-    def test_logout_is_public(self, client):
+    def test_logout_requires_auth(self, client):
+        client.cookies.clear()
         response = client.get("/logout", follow_redirects=False)
         assert response.status_code == 303
+        assert "/login" in response.headers["location"]
+
+    def test_health_is_public(self, client):
+        response = client.get("/health", follow_redirects=False)
+        assert response.status_code == 200
+        assert response.json() == {"ok": True}
 
     def test_static_files_are_public(self, client):
         # Статика не блокируется миддлварой, даже без авторизации.
