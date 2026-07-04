@@ -1,14 +1,6 @@
-echo_  
-running...
+# echo_
 
-<p align="center">
-  <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExOWtuYnBucTE1dmFiOW15MTJ6MjR5ZjA5ZzI1MWcxY2tqZm5jMHIydSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l2JJvlHT0ERLhhhfO/giphy.gif" width="250"/>
-</p>
-
----
-
-echo_  
-is a quiet journal for the moments that stay with you. Not every day needs to become an entry.   
+A quiet journal for the moments that stay with you. Not every day needs to become an entry.  
 Life doesn’t need a log of everything. Just milestones.
 
 ---
@@ -47,7 +39,7 @@ Just enough CLI to get around.
 - Keyboard-first
 - No frontend framework
 - Minimal JavaScript
-- 
+
 ---
 
 For setup, see [Development Guide](docs/development.md)

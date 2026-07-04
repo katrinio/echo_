@@ -1,47 +1,47 @@
-# Архитектура проекта
+# Architecture
 
-## Обзор
+## Overview
 
-echo_ — личный лог вех. Небольшое веб-приложение на FastAPI с SSR через Jinja2 и SQLite в качестве хранилища.
+echo_ is a personal milestone log — a small web app built with FastAPI, server-rendered via Jinja2, using SQLite as the data store.
 
-## Стек
+## Stack
 
-| Слой           | Технология                         |
-|----------------|------------------------------------|
-| Веб-фреймворк  | FastAPI                            |
-| Шаблоны        | Jinja2                             |
-| ORM            | SQLAlchemy 2.x (Mapped API)        |
-| БД             | SQLite (`echo.db` в корне проекта) |
-| Миграции       | Alembic                            |
-| Валидация форм | Pydantic v2                        |
-| Конфигурация   | Pydantic Settings                  |
+| Layer           | Technology                         |
+|-----------------|------------------------------------|
+| Web framework   | FastAPI                            |
+| Templates       | Jinja2                             |
+| ORM             | SQLAlchemy 2.x (Mapped API)        |
+| Database        | SQLite (`echo.db` in project root) |
+| Migrations      | Alembic                            |
+| Form validation | Pydantic v2                        |
+| Configuration   | Pydantic Settings                  |
 
-## Структура
+## Structure
 
 ```
 src/
-  app.py            — FastAPI app, middleware, роутеры, on_startup
-  config.py         — Settings (Pydantic), единственный экземпляр settings
+  app.py            — FastAPI app, middleware, routers, lifespan
+  config.py         — Settings (Pydantic), singleton settings instance
   database.py       — SQLAlchemy engine, Base
-  main.py           — точка входа
-  runner.py         — команда echo-run
-  sitecustomize.py  — настройка import path
+  main.py           — entry point
+  runner.py         — echo-run command
+  sitecustomize.py  — import path setup
 
   orm/
-    milestone.py      — ORM-модель Milestone + методы запросов
-    tag.py            — ORM-модель Tag + запросы
-    milestone_tags.py — таблица связи many-to-many
-    alembic.ini       — конфиг Alembic
+    milestone.py      — Milestone ORM model + query methods
+    tag.py            — Tag ORM model + queries
+    milestone_tags.py — many-to-many join table
+    alembic.ini       — Alembic config
     migrations/       — env.py, script.py.mako, versions/
 
   web/
-    templates.py      — общий Jinja2Templates, asset_version, settings в контексте
+    templates.py      — shared Jinja2Templates, asset_version, settings in context
 
   features/
     auth/
       api.py          — GET/POST /login, GET /logout
-      middleware.py   — AuthMiddleware (защита всех маршрутов кроме публичных)
-      security.py     — сессии, проверка пароля, cookie
+      middleware.py   — AuthMiddleware (protects all routes except public ones)
+      security.py     — sessions, password check, cookie
 
     milestones/
       api.py          — /, /new, /milestones/{slug}, /milestones/{slug}/edit
@@ -55,7 +55,7 @@ src/
 
     terminal/
       api.py          — /help, /random, /search, /terminal/commands
-      commands.py     — список команд (COMMANDS)
+      commands.py     — command list (COMMANDS)
 
   templates/
     base.html
@@ -71,7 +71,7 @@ src/
   static/
     css/
       base.css, forms.css
-      pages/    timeline.css, milestone.css
+      pages/       timeline.css, milestone.css
       components/  terminal.css, terminal-table.css
     js/
       autocomplete/  core.js, tags.js, terminal.js
@@ -81,120 +81,120 @@ src/
       favicon.ico, favicon.svg, apple-touch-icon.png
 ```
 
-## Маршруты
+## Routes
 
-| Метод | Путь                      | Действие                           |
-|-------|---------------------------|------------------------------------|
-| GET   | `/`                       | Список вех, сгруппированных по дню |
-| GET   | `/new`                    | Форма создания вехи                |
-| POST  | `/new`                    | Создать веху                       |
-| GET   | `/milestones/{slug}`      | Детальная страница вехи            |
-| GET   | `/milestones/{slug}/edit` | Форма редактирования               |
-| POST  | `/milestones/{slug}/edit` | Обновить веху                      |
-| GET   | `/tags`                   | Список всех тегов с количеством    |
-| GET   | `/tags/{tag}`             | Страница тега                      |
-| GET   | `/help`                   | Терминальные команды               |
-| GET   | `/random`                 | Случайная веха (редирект)          |
-| GET   | `/search?q=`              | Поиск по названию и описанию       |
-| GET   | `/login`                  | Форма входа                        |
-| POST  | `/login`                  | Аутентификация                     |
-| GET   | `/logout`                 | Выход                              |
-| GET   | `/terminal/commands`      | JSON-список команд для автодополнения |
+| Method | Path                      | Action                             |
+|--------|---------------------------|------------------------------------|
+| GET    | `/`                       | Milestone list, grouped by day     |
+| GET    | `/new`                    | Create milestone form              |
+| POST   | `/new`                    | Create milestone                   |
+| GET    | `/milestones/{slug}`      | Milestone detail page              |
+| GET    | `/milestones/{slug}/edit` | Edit form                          |
+| POST   | `/milestones/{slug}/edit` | Update milestone                   |
+| GET    | `/tags`                   | All tags with counts               |
+| GET    | `/tags/{tag}`             | Tag page                           |
+| GET    | `/help`                   | Terminal commands                  |
+| GET    | `/random`                 | Random milestone (redirect)        |
+| GET    | `/search?q=`              | Search by title and description    |
+| GET    | `/login`                  | Login form                         |
+| POST   | `/login`                  | Authenticate                       |
+| GET    | `/logout`                 | Log out                            |
+| GET    | `/terminal/commands`      | JSON command list for autocomplete |
 
-## Аутентификация
+## Authentication
 
-Все маршруты защищены `AuthMiddleware`. Исключения: `/login`, `/logout`, `/health`, `/static/*`.
+All routes are protected by `AuthMiddleware`. Public exceptions: `/login`, `/logout`, `/health`, `/robots.txt`, `/static/*`.
 
-Сессия хранится в httponly cookie (`echo_session`), подписанной через `itsdangerous`. Срок — 30 дней. Cookie `secure=True` только в `production`.
+The session is stored in an httponly cookie (`echo_session`), signed with `itsdangerous`. Sessions last 30 days. The cookie is `secure=True` only in `production`.
 
-## Конфигурация
+## Configuration
 
-Читается из `.env` через `pydantic-settings`. Переменные:
+Read from `.env` via `pydantic-settings`. Variables:
 
-| Переменная          | По умолчанию                  | Описание                     |
-|---------------------|-------------------------------|------------------------------|
-| `DATABASE_URL`      | `sqlite:///echo.db`           | URL базы данных              |
-| `SESSION_SECRET_KEY`| —                             | Ключ подписи сессии (обязательно) |
-| `ECHO_PASSWORD`     | —                             | Пароль входа (обязательно)   |
-| `ECHO_USERNAME`     | `katrin`                      | Имя пользователя             |
-| `ENVIRONMENT`       | из системного env, не из .env | `production` влияет на secure cookie |
+| Variable             | Default                        | Description                            |
+|----------------------|--------------------------------|----------------------------------------|
+| `DATABASE_URL`       | `sqlite:///echo.db`            | Database URL                           |
+| `SESSION_SECRET_KEY` | —                              | Session signing key (required)         |
+| `ECHO_PASSWORD`      | —                              | Login password (required)              |
+| `ECHO_USERNAME`      | `katrin`                       | Username                               |
+| `ENVIRONMENT`        | from system env, not from .env | `production` enables the secure cookie |
 
-## Модели данных
+## Data models
 
 ### Milestone
 
 ```python
 class Milestone(Base):
-    id:           int       # первичный ключ
-    title:        str       # название (до 255 символов)
-    slug:         str       # уникальный идентификатор (UPPER_SNAKE_CASE)
-    description:  str       # описание, по умолчанию ""
-    happened_at:  date      # дата события
-    created_at:   datetime  # дата записи (UTC, автоматически)
-    tags:         list[Tag] # many-to-many через milestone_tags
+    id:           int       # primary key
+    title:        str       # up to 255 characters
+    slug:         str       # unique identifier (UPPER_SNAKE_CASE)
+    description:  str       # defaults to ""
+    happened_at:  date      # date of the event
+    created_at:   datetime  # record creation time (UTC, auto-set)
+    tags:         list[Tag] # many-to-many via milestone_tags
 ```
 
 ### Tag
 
 ```python
 class Tag(Base):
-    id:         int             # первичный ключ
-    name:       str             # уникальное название (UPPERCASE)
-    milestones: list[Milestone] # обратная связь
+    id:         int             # primary key
+    name:       str             # unique name (UPPERCASE)
+    milestones: list[Milestone] # back-reference
 ```
 
-Таблица связи `milestone_tags`: `milestone_id` + `tag_id` (составной PK).
+Join table `milestone_tags`: `milestone_id` + `tag_id` (composite PK).
 
 ## ORM
 
-`src/orm/` — чистые модели с методами запросов. `Base` и `milestone_tags` живут в `database.py` чтобы избежать circular imports.
+`src/orm/` contains plain models with query methods. `Base` and `milestone_tags` live in `database.py` to avoid circular imports.
 
-Slug генерируется из title автоматически. При дубликате добавляется суффикс (`_2`, `_3`, ...). При редактировании slug пересчитывается только если изменился title.
+Slugs are generated from the title automatically. Duplicates get a numeric suffix (`_2`, `_3`, ...). When editing, the slug is only recalculated if the title changed.
 
-## Валидация форм
+## Form validation
 
-DTO в `features/milestones/dto.py`:
+DTOs in `features/milestones/dto.py`:
 
-- `title` — не пустой, только `A-Za-z0-9 .-`
-- `happened_at` — не в будущем
-- `description` — strip пробелов
-- `tags` — разбивается по пробелам/запятым, приводится к UPPERCASE
+- `title` — non-empty, `A-Za-z0-9 .-` only
+- `happened_at` — cannot be in the future
+- `description` — whitespace stripped
+- `tags` — split on spaces/commas, normalized to UPPERCASE
 
-При ошибке — возврат шаблона с `error`, без редиректа.
+On validation error, the template is returned with an `error` field — no redirect.
 
-## Терминал
+## Terminal
 
-Нижняя строка — навигационный слой, не shell. Команды: `help`, `new`, `tags`, `tag {name}`, `random`, `search {query}`, `logout`. Список команд отдаётся через `/terminal/commands` и используется для автодополнения.
+The bottom bar is a navigation layer, not a shell. Commands: `help`, `new`, `tags`, `tag {name}`, `random`, `search {query}`, `logout`. The command list is served at `/terminal/commands` and used for autocomplete.
 
-## Миграции
+## Migrations
 
-| Ревизия        | Описание                            |
-|----------------|-------------------------------------|
-| `733b95b80ad6` | Создание таблицы milestones         |
-| `4f1b2d9c7a11` | Добавление tags и milestone_tags    |
+| Revision       | Description                      |
+|----------------|----------------------------------|
+| `733b95b80ad6` | Create milestones table          |
+| `4f1b2d9c7a11` | Add tags and milestone_tags      |
 
 ```bash
 poetry run alembic -c src/orm/alembic.ini upgrade head
 ```
 
-## Запуск
+## Running
 
 ```bash
 poetry run echo-run
 ```
 
-Таблицы создаются автоматически при первом запуске через `lifespan`. После — проставить ревизию:
+Tables are created automatically on first run via `lifespan`. Afterwards, stamp the current revision:
 
 ```bash
 poetry run alembic -c src/orm/alembic.ini stamp 4f1b2d9c7a11
 ```
 
-## Качество кода
+## Code quality
 
-Pre-commit хуки: Ruff, MyPy, djLint, Stylelint, ESLint, pytest, JS-тесты (Vitest), poetry check, alembic check.  
-Линтеры (кроме MyPy и pytest) — только на изменённые файлы.
+Pre-commit hooks: Ruff, MyPy, djLint, Stylelint, ESLint, pytest, JS tests (Vitest), poetry check, alembic check.  
+Linters (except MyPy and pytest) run only on changed files.
 
 CI (`.github/workflows/`):
 - `quality_gates.yml` — Python style, Frontend style, Python tests, JS tests, Migrations
-- `smoke.yml` — запускается после quality gates, поднимает сервер и проверяет `/login`
-- `release.yml` — semantic-release, публикует черновик релиза при пуше в main
+- `smoke.yml` — runs after quality gates, starts the server and checks `/login`
+- `release.yml` — semantic-release, publishes a draft release on push to main
