@@ -1,6 +1,6 @@
+# echo_
 
-echo_  
-is a quiet journal for the moments that stay with you. Not every day needs to become an entry.   
+A quiet journal for the moments that stay with you. Not every day needs to become an entry.  
 Life doesn’t need a log of everything. Just milestones.
 
 ---
@@ -39,7 +39,7 @@ Just enough CLI to get around.
 - Keyboard-first
 - No frontend framework
 - Minimal JavaScript
-- 
+
 ---
 
 For setup, see [Development Guide](docs/development.md)
