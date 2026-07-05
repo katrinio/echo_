@@ -13,7 +13,7 @@ htmlcov
 .vscode
 
 *.db
-echo.db
+user_data/echo.db
 
 .env
 .env.*
