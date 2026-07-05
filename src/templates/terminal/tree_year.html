@@ -11,20 +11,20 @@
                 <div class="terminal-tree-year">{{ year }}</div>
                 <div class="terminal-tree-months">
                     {% for month, milestones in months.items() %}
+                        {% set is_last_month = loop.last %}
                         <section>
                             <div class="terminal-tree-node terminal-tree-node--label">
-                                <span class="terminal-tree-branch">{% if loop.last %}└──{% else %}├──{% endif %}</span>
+                                <span class="terminal-tree-branch">{% if is_last_month %}└──{% else %}├──{% endif %}</span>
                                 <span class="terminal-tree-label">{{ month }}</span>
                             </div>
-                            <div class="terminal-tree-months">
-                                {% for milestone in milestones %}
-                                    <a class="terminal-tree-node terminal-tree-node--leaf"
-                                       data-keyboard-row
-                                       href="/milestones/{{ milestone.slug }}">
-                                        <span class="terminal-tree-label">{{ milestone.happened_at.strftime("%d") }} {{ milestone.title }}</span>
-                                    </a>
-                                {% endfor %}
-                            </div>
+                            {% for milestone in milestones %}
+                                <a class="terminal-tree-node"
+                                   data-keyboard-row
+                                   href="/milestones/{{ milestone.slug }}">
+                                    <span class="terminal-tree-branch">{% if not is_last_month %}│{% endif %}</span>
+                                    <span class="terminal-tree-label">{{ milestone.happened_at.strftime("%d") }} {{ milestone.title }}</span>
+                                </a>
+                            {% endfor %}
                         </section>
                     {% endfor %}
                 </div>

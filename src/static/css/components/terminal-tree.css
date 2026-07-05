@@ -10,6 +10,7 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
+  margin-bottom: 20px;
 }
 
 .terminal-tree-year {
@@ -21,13 +22,13 @@
 .terminal-tree-months {
   display: flex;
   flex-direction: column;
-  gap: 2px;
   padding-left: 2ch;
 }
 
 .terminal-tree-node {
   display: flex;
   align-items: baseline;
+  gap: 8px;
   white-space: pre;
   color: var(--text);
   text-decoration: none;
