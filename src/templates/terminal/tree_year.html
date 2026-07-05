@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}tree{% endblock %}
+{% block content %}
+    <a class="back" href="/">← Back</a>
+    <header>
+        <div class="prompt">{{ settings.echo_username }}@echo_:~$ tree</div>
+    </header>
+    <section class="terminal-tree">
+        {% for year, months in tree.items() %}
+            <div class="terminal-tree-group">
+                <div class="terminal-tree-year">{{ year }}</div>
+                <div class="terminal-tree-months">
+                    {% for month, milestones in months.items() %}
+                        <section>
+                            <div class="terminal-tree-node terminal-tree-node--label">
+                                <span class="terminal-tree-branch">{% if loop.last %}└──{% else %}├──{% endif %}</span>
+                                <span class="terminal-tree-label">{{ month }}</span>
+                            </div>
+                            <div class="terminal-tree-months">
+                                {% for milestone in milestones %}
+                                    <a class="terminal-tree-node terminal-tree-node--leaf"
+                                       data-keyboard-row
+                                       href="/milestones/{{ milestone.slug }}">
+                                        <span class="terminal-tree-label">{{ milestone.happened_at.strftime("%d") }} {{ milestone.title }}</span>
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        </section>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </section>
+{% endblock %}

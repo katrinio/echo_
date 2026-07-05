@@ -44,7 +44,7 @@ def random_page():
 def tree_page(request: Request):
     return templates.TemplateResponse(
         request,
-        "terminal/tree.html",
+        "terminal/tree_year.html",
         {"tree": group_by_year_and_month(Milestone.all())},
     )
 

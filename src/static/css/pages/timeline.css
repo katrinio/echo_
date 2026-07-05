@@ -3,9 +3,6 @@
   display: flex;
   flex-direction: column;
   gap: 18px;
-  max-width: 520px;
-  margin-top: 32px;
-  font-family: monospace;
 }
 
 .day-group {
@@ -14,65 +11,8 @@
   gap: 4px;
 }
 
-.month-group {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding-left: 2ch;
-}
-
 .timeline-date {
   display: block;
-  color: var(--title);
-  margin-bottom: 2px;
-  font-weight: 600;
-}
-
-.timeline-month {
   color: var(--muted);
-  padding-left: 0;
-  margin-top: 4px;
-}
-
-.tree-row {
-  display: flex;
-  align-items: center;
-  color: var(--text);
-  text-decoration: none;
-  padding-left: 1ch;
-}
-
-.tree-row:hover,
-.tree-row:active {
-  color: var(--accent);
-}
-
-.tree-row-label {
-  min-width: 3ch;
-  color: inherit;
-}
-
-.tree-row-value {
-  color: inherit;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.tree-row.is-selected {
-  color: var(--selected);
-}
-
-[data-keyboard-row].is-selected .tree-row-label,
-[data-keyboard-row].is-selected .tree-row-value {
-  color: inherit;
-}
-
-.tree-item {
-  color: var(--text);
-  text-decoration: none;
-}
-
-.slug {
-  color: var(--text);
+  margin-bottom: 2px;
 }

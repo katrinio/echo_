@@ -1,0 +1,64 @@
+/* Terminal tree rendering */
+.terminal-tree {
+  max-width: 520px;
+  margin-top: 32px;
+  font-family: monospace;
+  line-height: 1.5;
+}
+
+.terminal-tree-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.terminal-tree-year {
+  display: block;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+.terminal-tree-months {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-left: 2ch;
+}
+
+.terminal-tree-node {
+  display: flex;
+  align-items: baseline;
+  white-space: pre;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.terminal-tree-node--label {
+  color: var(--muted);
+}
+
+.terminal-tree-node--leaf {
+  padding-left: 2ch;
+}
+
+.terminal-tree-branch {
+  display: inline-block;
+  width: 3ch;
+  color: var(--muted);
+  flex: 0 0 auto;
+}
+
+.terminal-tree-label {
+  color: inherit;
+  white-space: pre;
+}
+
+.terminal-tree-node:hover,
+.terminal-tree-node:active {
+  color: var(--accent);
+}
+
+[data-keyboard-row].is-selected .terminal-tree-branch,
+[data-keyboard-row].is-selected .terminal-tree-label {
+  color: inherit;
+}
