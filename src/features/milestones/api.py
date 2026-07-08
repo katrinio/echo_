@@ -4,7 +4,12 @@ from fastapi import APIRouter, Form, Request
 from fastapi.responses import RedirectResponse
 from pydantic import ValidationError
 
-from src.features.milestones.dto import MilestoneCreateDTO, MilestoneUpdateDTO
+from src.features.milestones.dto import (
+    MilestoneCreateDTO,
+    MilestoneUpdateDTO,
+    today_in_timezone,
+    validate_happened_at_not_future,
+)
 from src.features.milestones.services import group_by_day
 from src.orm.milestone import Milestone
 from src.orm.tag import Tag
@@ -28,14 +33,14 @@ def index(request: Request):
 
 @router.get("/new")
 def new_milestone(request: Request):
-        return templates.TemplateResponse(
-            request,
-            "milestones/new.html",
-            {
-                "today": date.today().isoformat(),
-                "all_tags": Tag.all(),
-            },
-        )
+    return templates.TemplateResponse(
+        request,
+        "milestones/new.html",
+        {
+            "today": today_in_timezone(None).isoformat(),
+            "all_tags": Tag.all(),
+        },
+    )
 
 
 @router.post("/new")
@@ -45,8 +50,10 @@ def create_milestone(
     happened_at: date = Form(),
     description: str = Form(default=""),
     tags: str = Form(default=""),
+    timezone: str = Form(default=""),
 ):
     try:
+        validate_happened_at_not_future(happened_at, timezone or None)
         dto = MilestoneCreateDTO(
             title=title, happened_at=happened_at, description=description, tags=tags
         )
@@ -56,7 +63,18 @@ def create_milestone(
             "milestones/new.html",
             {
                 "error": _first_error(exc),
-                "today": date.today().isoformat(),
+                "today": today_in_timezone(timezone or None).isoformat(),
+                "all_tags": Tag.all(),
+            },
+            status_code=422,
+        )
+    except ValueError as exc:
+        return templates.TemplateResponse(
+            request,
+            "milestones/new.html",
+            {
+                "error": str(exc),
+                "today": today_in_timezone(timezone or None).isoformat(),
                 "all_tags": Tag.all(),
             },
             status_code=422,
@@ -70,6 +88,7 @@ def create_milestone(
     )
     return RedirectResponse(url="/", status_code=303)
 
+
 @router.get("/milestones/{slug}")
 def milestone_detail(request: Request, slug: str):
     return templates.TemplateResponse(
@@ -81,14 +100,14 @@ def milestone_detail(request: Request, slug: str):
 
 @router.get("/milestones/{slug}/edit")
 def edit_milestone(request: Request, slug: str):
-        return templates.TemplateResponse(
-            request,
-            "milestones/edit.html",
-            {
-                "milestone": Milestone.get_by_slug(slug),
-                "all_tags": Tag.all(),
-            },
-        )
+    return templates.TemplateResponse(
+        request,
+        "milestones/edit.html",
+        {
+            "milestone": Milestone.get_by_slug(slug),
+            "all_tags": Tag.all(),
+        },
+    )
 
 
 @router.post("/milestones/{slug}/edit")
@@ -99,8 +118,10 @@ def update_milestone(
     happened_at: date = Form(),
     description: str = Form(default=""),
     tags: str = Form(default=""),
+    timezone: str = Form(default=""),
 ):
     try:
+        validate_happened_at_not_future(happened_at, timezone or None)
         dto = MilestoneUpdateDTO(
             title=title, happened_at=happened_at, description=description, tags=tags
         )
@@ -111,6 +132,17 @@ def update_milestone(
             {
                 "milestone": Milestone.get_by_slug(slug),
                 "error": _first_error(exc),
+                "all_tags": Tag.all(),
+            },
+            status_code=422,
+        )
+    except ValueError as exc:
+        return templates.TemplateResponse(
+            request,
+            "milestones/edit.html",
+            {
+                "milestone": Milestone.get_by_slug(slug),
+                "error": str(exc),
                 "all_tags": Tag.all(),
             },
             status_code=422,

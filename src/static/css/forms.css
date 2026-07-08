@@ -16,6 +16,13 @@ textarea {
   width: 100%;
 }
 
+@media (max-width: 640px) {
+  input[type="date"] {
+    min-width: 0;
+    width: 100%;
+  }
+}
+
 /* ===== Кнопка сохранения ===== */
 button[type="submit"] {
   background: transparent;
