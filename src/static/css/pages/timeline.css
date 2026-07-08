@@ -16,3 +16,13 @@
   color: var(--muted);
   margin-bottom: 2px;
 }
+
+.tree-item {
+  color: var(--text);
+}
+
+.tree-item:hover,
+.tree-item:active,
+.tree-item.is-selected {
+  color: var(--accent);
+}
