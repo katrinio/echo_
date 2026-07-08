@@ -1,7 +1,8 @@
 
 
 import re
-from datetime import date
+from datetime import UTC, date, datetime
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from pydantic.functional_validators import field_validator
 from pydantic.main import BaseModel
@@ -29,13 +30,6 @@ class MilestoneCreateDTO(BaseModel):
             )
         return v
 
-    @field_validator("happened_at")
-    @classmethod
-    def happened_at_not_future(cls, v: date) -> date:
-        if v > date.today():
-            raise ValueError("Date cannot be in the future.")
-        return v
-
     @field_validator("description")
     @classmethod
     def description_stripped(cls, v: str) -> str:
@@ -49,3 +43,20 @@ class MilestoneCreateDTO(BaseModel):
 
 class MilestoneUpdateDTO(MilestoneCreateDTO):
     tags: str = ""
+
+
+def today_in_timezone(timezone_name: str | None) -> date:
+    if not timezone_name:
+        return datetime.now(UTC).date()
+
+    try:
+        zone = ZoneInfo(timezone_name)
+    except ZoneInfoNotFoundError:
+        return datetime.now(UTC).date()
+
+    return datetime.now(zone).date()
+
+
+def validate_happened_at_not_future(happened_at: date, timezone_name: str | None) -> None:
+    if happened_at > today_in_timezone(timezone_name):
+        raise ValueError("Date cannot be in the future for your timezone.")

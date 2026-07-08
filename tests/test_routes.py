@@ -152,9 +152,14 @@ class TestTerminalRoutes:
         response = auth_client.get("/search?q=test")
         assert response.status_code == 200
 
+    def test_tree_returns_200(self, auth_client):
+        response = auth_client.get("/tree")
+        assert response.status_code == 200
+
     def test_terminal_commands_returns_json(self, auth_client):
         response = auth_client.get("/terminal/commands")
         assert response.status_code == 200
         data = response.json()
         assert isinstance(data, list)
         assert any(cmd["command"] == "help" for cmd in data)
+        assert any(cmd["command"] == "tree" for cmd in data)

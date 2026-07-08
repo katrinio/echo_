@@ -7,6 +7,7 @@ const COMMAND_HANDLERS = {
   new: () => "/new",
   random: () => "/random",
   tags: () => "/tags",
+  tree: () => "/tree",
   tag: async (args) => {
     const tagName = args.trim().toUpperCase();
     if (!tagName) {

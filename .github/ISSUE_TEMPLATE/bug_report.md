@@ -8,15 +8,15 @@ labels: bug
 
 <!-- What did you do, and what went wrong? -->
 
-## Expected behavior
-
-<!-- What should have happened instead? -->
-
 ## Steps to reproduce
 
 1. 
 2. 
 3. 
+
+## Expected behavior
+
+<!-- What should have happened instead? -->
 
 ## Environment
 

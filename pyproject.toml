@@ -24,6 +24,7 @@ dependencies = [
 
 [project.scripts]
 echo-run = "src.runner:run"
+echo-seed = "scripts.seed_echo:main"
 
 
 [build-system]
