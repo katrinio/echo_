@@ -1,65 +1,57 @@
-/* Terminal tree rendering */
 .terminal-tree {
-  max-width: 520px;
-  margin-top: 32px;
+  margin-top: 18px;
   font-family: monospace;
-  line-height: 1.5;
+  line-height: 1.35;
 }
 
-.terminal-tree-group {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  margin-bottom: 20px;
-}
-
-.terminal-tree-year {
+.terminal-tree-line {
   display: block;
   color: var(--text);
-  margin-bottom: 2px;
-}
-
-.terminal-tree-months {
-  display: flex;
-  flex-direction: column;
-  padding-left: 2ch;
-}
-
-.terminal-tree-node {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
   white-space: pre;
-  color: var(--text);
+}
+
+.terminal-tree-line--date,
+.terminal-tree-line--context,
+.terminal-tree-line--empty {
+  color: var(--muted);
+}
+
+.terminal-tree-line--context,
+.terminal-tree-entry {
+  padding-left: 1.5ch;
+}
+
+.terminal-tree-entry {
   text-decoration: none;
 }
 
-.terminal-tree-node--label {
-  color: var(--muted);
-}
-
-.terminal-tree-node--leaf {
-  padding-left: 2ch;
-}
-
 .terminal-tree-branch {
-  display: inline-block;
-  width: 3ch;
-  color: var(--muted);
-  flex: 0 0 auto;
+  display: inline;
+  color: inherit;
 }
 
 .terminal-tree-label {
   color: inherit;
-  white-space: pre;
 }
 
-.terminal-tree-node:hover,
-.terminal-tree-node:active {
+.terminal-tree-entry:hover,
+.terminal-tree-entry:active {
+  color: var(--accent);
+}
+
+[data-keyboard-row].is-selected {
   color: var(--accent);
 }
 
 [data-keyboard-row].is-selected .terminal-tree-branch,
 [data-keyboard-row].is-selected .terminal-tree-label {
   color: inherit;
+}
+
+/* Keep tree output quiet on narrow screens */
+@media (width <= 640px) {
+  .terminal-tree {
+    margin-top: 14px;
+    line-height: 1.3;
+  }
 }
