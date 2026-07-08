@@ -47,14 +47,14 @@ src/
       api.py          — /, /new, /milestones/{slug}, /milestones/{slug}/edit
       dto.py          — MilestoneCreateDTO, MilestoneUpdateDTO
       helpers.py      — slug_from_title, normalize_tag
-      services.py     — group_by_day
+      services.py     — group_by_day, group_by_year_and_month
 
     tags/
       api.py          — /tags, /tags/{tag_name}
       services.py     — get_milestones_for_tag
 
     terminal/
-      api.py          — /help, /random, /search, /terminal/commands
+      api.py          — /help, /random, /search, /terminal/commands, /tree
       commands.py     — command list (COMMANDS)
 
   templates/
@@ -96,6 +96,7 @@ src/
 | GET    | `/help`                   | Terminal commands                  |
 | GET    | `/random`                 | Random milestone (redirect)        |
 | GET    | `/search?q=`              | Search by title and description    |
+| GET    | `/tree`                   | Chronological terminal journal     |
 | GET    | `/login`                  | Login form                         |
 | POST   | `/login`                  | Authenticate                       |
 | GET    | `/logout`                 | Log out                            |
@@ -156,7 +157,7 @@ Slugs are generated from the title automatically. Duplicates get a numeric suffi
 DTOs in `features/milestones/dto.py`:
 
 - `title` — non-empty, `A-Za-z0-9 .-` only
-- `happened_at` — cannot be in the future
+- `happened_at` — cannot be in the future for the user's timezone
 - `description` — whitespace stripped
 - `tags` — split on spaces/commas, normalized to UPPERCASE
 
@@ -164,7 +165,11 @@ On validation error, the template is returned with an `error` field — no redir
 
 ## Terminal
 
-The bottom bar is a navigation layer, not a shell. Commands: `help`, `new`, `tags`, `tag {name}`, `random`, `search {query}`, `logout`. The command list is served at `/terminal/commands` and used for autocomplete.
+The bottom bar is a navigation layer, not a shell. Commands: `help`, `new`, `tags`, `tag {name}`, `random`, `search {query}`, `tree`, `logout`. The command list is served at `/terminal/commands` and used for autocomplete.
+
+## Timeline
+
+`/tree` renders a chronological terminal journal using data grouped by year, month, and day. The backend helper `group_by_year_and_month` returns nested `OrderedDict` values in the shape `Year -> Month -> Day -> [Milestone]` so the template can render plain text-style output with stable alignment.
 
 ## Migrations
 

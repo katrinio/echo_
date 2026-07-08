@@ -1,0 +1,83 @@
+.journal-log {
+  margin-top: 1.5rem;
+  font-family: inherit;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.journal-log-year {
+  margin-top: 2rem;
+  color: var(--title);
+}
+
+.journal-log-year:first-child {
+  margin-top: 0;
+}
+
+.journal-log-month {
+  margin-top: 0.75rem;
+  margin-bottom: 0.15rem;
+  color: var(--muted);
+}
+
+.journal-log-days {
+  display: block;
+}
+
+.journal-log-daygroup {
+  display: block;
+}
+
+.journal-log-entry {
+  display: grid;
+  grid-template-columns: 3ch minmax(0, 1fr);
+  column-gap: 1ch;
+  width: 100%;
+  max-width: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+
+.journal-log-day {
+  color: var(--muted);
+  text-align: right;
+  white-space: pre;
+  flex: 0 0 auto;
+}
+
+.journal-log-day-blank {
+  color: transparent;
+}
+
+.journal-log-title {
+  min-width: 0;
+}
+
+.journal-log-entry:hover,
+.journal-log-entry:active,
+[data-keyboard-row].is-selected {
+  color: var(--accent);
+}
+
+.journal-log-entry:hover .journal-log-day,
+[data-keyboard-row].is-selected .journal-log-day {
+  color: inherit;
+}
+
+.journal-log-daygroup + .journal-log-daygroup {
+  margin-top: 0;
+}
+
+.journal-log-empty {
+  color: var(--muted);
+}
+
+@media (width <= 640px) {
+  .journal-log {
+    line-height: 1.4;
+  }
+
+  .journal-log-entry {
+    grid-template-columns: 3ch minmax(0, 1fr);
+  }
+}

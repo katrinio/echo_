@@ -2,19 +2,15 @@ import unittest
 from datetime import UTC, date, datetime, timedelta
 import sys
 from pathlib import Path
-
-ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
-
 from src.features.milestones.dto import (
     MilestoneCreateDTO,
     today_in_timezone,
     validate_happened_at_not_future,
 )
 
-
-
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 TODAY = date.today()
 YESTERDAY = TODAY - timedelta(days=1)

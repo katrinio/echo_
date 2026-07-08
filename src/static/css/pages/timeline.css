@@ -5,7 +5,6 @@
   gap: 18px;
 }
 
-/* Группировка по дням */
 .day-group {
   display: flex;
   flex-direction: column;
@@ -18,34 +17,12 @@
   margin-bottom: 2px;
 }
 
-/* Ссылка на запись в списке */
 .tree-item {
-  display: grid;
-  grid-template-columns: 3ch 1fr;
-  gap: 8px;
-  padding-left: 2px;
   color: var(--text);
-  text-decoration: none;
 }
 
 .tree-item:hover,
-.tree-item:active {
+.tree-item:active,
+.tree-item.is-selected {
   color: var(--accent);
-}
-
-.tree-branch {
-  color: var(--muted);
-}
-
-.slug {
-  color: var(--text);
-}
-
-[data-keyboard-row].is-selected {
-  color: var(--selected);
-}
-
-[data-keyboard-row].is-selected .tree-branch,
-[data-keyboard-row].is-selected .slug {
-  color: var(--selected);
 }
