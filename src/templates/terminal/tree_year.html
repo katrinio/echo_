@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}tree{% endblock %}
+{% block content %}
+    <a class="back" href="/">← Back</a>
+    <header>
+        <div class="prompt">{{ settings.echo_username }}@echo_:~$ tree</div>
+    </header>
+    <section class="journal-log" aria-label="Timeline">
+        {% for year, months in tree.items() %}
+            <div class="journal-log-year">{{ year }}</div>
+            {% for month, milestones in months.items() %}
+                <div class="journal-log-month">{{ month }}</div>
+                <div class="journal-log-entries">
+                    {% for milestone in milestones %}
+                        <a class="journal-log-entry"
+                           data-keyboard-row
+                           href="/milestones/{{ milestone.slug }}">
+                            <span class="journal-log-day">{{ "%02d"|format(milestone.happened_at.day) }}</span>
+                            <span class="journal-log-title">{{ milestone.title }}</span>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="journal-log-empty">No milestones</div>
+        {% endfor %}
+    </section>
+{% endblock %}

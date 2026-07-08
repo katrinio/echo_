@@ -1,57 +1,69 @@
-.terminal-tree {
-  margin-top: 18px;
-  font-family: monospace;
-  line-height: 1.35;
-}
-
-.terminal-tree-line {
-  display: block;
+.journal-log {
+  margin-top: 1.5rem;
+  font-family: inherit;
   color: var(--text);
-  white-space: pre;
+  line-height: 1.5;
 }
 
-.terminal-tree-line--date,
-.terminal-tree-line--context,
-.terminal-tree-line--empty {
+.journal-log-year {
+  margin-top: 2rem;
+  color: var(--title);
+}
+
+.journal-log-year:first-child {
+  margin-top: 0;
+}
+
+.journal-log-month {
+  margin-top: 0.75rem;
+  margin-bottom: 0.15rem;
   color: var(--muted);
 }
 
-.terminal-tree-line--context,
-.terminal-tree-entry {
-  padding-left: 1.5ch;
+.journal-log-entries {
+  display: grid;
+  gap: 0;
 }
 
-.terminal-tree-entry {
-  text-decoration: none;
+.journal-log-entry {
+  display: grid;
+  grid-template-columns: 3ch 1fr;
+  column-gap: 1ch;
+  width: fit-content;
+  max-width: 100%;
 }
 
-.terminal-tree-branch {
-  display: inline;
-  color: inherit;
+.journal-log-day {
+  color: var(--muted);
+  text-align: right;
 }
 
-.terminal-tree-label {
-  color: inherit;
+.journal-log-title {
+  min-width: 0;
 }
 
-.terminal-tree-entry:hover,
-.terminal-tree-entry:active {
-  color: var(--accent);
-}
-
+.journal-log-entry:hover,
+.journal-log-entry:active,
 [data-keyboard-row].is-selected {
   color: var(--accent);
 }
 
-[data-keyboard-row].is-selected .terminal-tree-branch,
-[data-keyboard-row].is-selected .terminal-tree-label {
+.journal-log-entry:hover .journal-log-day,
+[data-keyboard-row].is-selected .journal-log-day {
   color: inherit;
 }
 
-/* Keep tree output quiet on narrow screens */
+.journal-log-empty {
+  color: var(--muted);
+}
+
 @media (width <= 640px) {
-  .terminal-tree {
-    margin-top: 14px;
-    line-height: 1.3;
+  .journal-log {
+    line-height: 1.4;
+  }
+
+  .journal-log-entry {
+    grid-template-columns: 3ch 1fr;
+    column-gap: 1ch;
   }
 }
