@@ -1,13 +1,17 @@
-from src.features.milestones.dto import MilestoneCreateDTO
 import unittest
-from datetime import date, timedelta
-from pathlib import Path
+from datetime import UTC, date, datetime, timedelta
 import sys
-
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
+
+from src.features.milestones.dto import (
+    MilestoneCreateDTO,
+    today_in_timezone,
+    validate_happened_at_not_future,
+)
 
 
 
@@ -54,9 +58,15 @@ class DateValidationTest(unittest.TestCase):
         dto = MilestoneCreateDTO(title="Test", happened_at=TODAY)
         self.assertEqual(dto.happened_at, TODAY)
 
-    # def test_future_date_raises(self) -> None:
-    #     with self.assertRaises(ValidationError):
-    #         MilestoneCreateDTO(title="Test", happened_at=TODAY + timedelta(days=1))
+    def test_today_in_utc_matches_server_utc_date(self) -> None:
+        self.assertEqual(today_in_timezone("UTC"), datetime.now(UTC).date())
+
+    def test_invalid_timezone_falls_back_to_utc(self) -> None:
+        self.assertEqual(today_in_timezone("Not/A_Zone"), datetime.now(UTC).date())
+
+    def test_future_date_raises(self) -> None:
+        with self.assertRaises(ValueError):
+            validate_happened_at_not_future(TODAY + timedelta(days=1), "UTC")
 
 
 class DescriptionValidationTest(unittest.TestCase):

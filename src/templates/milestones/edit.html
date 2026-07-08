@@ -17,6 +17,7 @@
                    value="{{ milestone.happened_at }}"
                    required>
         </label>
+        <input id="timezone" type="hidden" name="timezone" value="">
         <label>
             Tags
             <input id="tags-input"
@@ -38,4 +39,5 @@
             </label>
             <button type="submit">Save</button>
         </form>
+        <script src="/static/js/milestones/date.js" defer></script>
     {% endblock %}
