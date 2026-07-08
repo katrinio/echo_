@@ -1,5 +1,6 @@
 from collections import OrderedDict
 from collections.abc import Sequence
+from datetime import date
 
 from src.orm.milestone import Milestone
 
@@ -14,7 +15,7 @@ def group_by_day(milestones: Sequence[Milestone]) -> OrderedDict[str, list[Miles
 
 def group_by_year_and_month(
     milestones: Sequence[Milestone],
-) -> OrderedDict[int, OrderedDict[str, list[Milestone]]]:
+) -> OrderedDict[int, OrderedDict[str, OrderedDict[date, list[Milestone]]]]:
     months = {
         1: "Jan",
         2: "Feb",
@@ -30,19 +31,26 @@ def group_by_year_and_month(
         12: "Dec",
     }
 
-    grouped: dict[int, dict[int, list[Milestone]]] = {}
+    grouped: dict[int, dict[int, dict[date, list[Milestone]]]] = {}
     for milestone in milestones:
         year = milestone.happened_at.year
         month = milestone.happened_at.month
-        grouped.setdefault(year, {}).setdefault(month, []).append(milestone)
+        day = milestone.happened_at
+        grouped.setdefault(year, {}).setdefault(month, {}).setdefault(day, []).append(milestone)
 
-    ordered: OrderedDict[int, OrderedDict[str, list[Milestone]]] = OrderedDict()
+    ordered: OrderedDict[int, OrderedDict[str, OrderedDict[date, list[Milestone]]]] = OrderedDict()
     for year in sorted(grouped, reverse=True):
         month_groups = grouped[year]
         ordered[year] = OrderedDict(
             (
                 months[month],
-                sorted(month_groups[month], key=lambda item: item.happened_at),
+                OrderedDict(
+                    (
+                        day,
+                        sorted(month_groups[month][day], key=lambda item: item.happened_at),
+                    )
+                    for day in sorted(month_groups[month], reverse=True)
+                ),
             )
             for month in sorted(month_groups, reverse=True)
         )

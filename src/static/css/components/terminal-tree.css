@@ -20,22 +20,33 @@
   color: var(--muted);
 }
 
-.journal-log-entries {
-  display: grid;
-  gap: 0;
+.journal-log-days {
+  display: block;
+}
+
+.journal-log-daygroup {
+  display: block;
 }
 
 .journal-log-entry {
   display: grid;
-  grid-template-columns: 3ch 1fr;
+  grid-template-columns: 3ch minmax(0, 1fr);
   column-gap: 1ch;
-  width: fit-content;
+  width: 100%;
   max-width: 100%;
+  text-decoration: none;
+  color: inherit;
 }
 
 .journal-log-day {
   color: var(--muted);
   text-align: right;
+  white-space: pre;
+  flex: 0 0 auto;
+}
+
+.journal-log-day--blank {
+  color: transparent;
 }
 
 .journal-log-title {
@@ -53,6 +64,10 @@
   color: inherit;
 }
 
+.journal-log-daygroup + .journal-log-daygroup {
+  margin-top: 0;
+}
+
 .journal-log-empty {
   color: var(--muted);
 }
@@ -63,7 +78,6 @@
   }
 
   .journal-log-entry {
-    grid-template-columns: 3ch 1fr;
-    column-gap: 1ch;
+    grid-template-columns: 3ch minmax(0, 1fr);
   }
 }
