@@ -17,10 +17,15 @@ let resizeObserverCallback;
 
 beforeAll(() => {
   // ResizeObserver не реализован в jsdom — мокаем.
-  global.ResizeObserver = vi.fn((callback) => {
-    resizeObserverCallback = callback;
-    return { observe: vi.fn(), disconnect: vi.fn() };
-  });
+  global.ResizeObserver = class {
+    constructor(callback) {
+      resizeObserverCallback = callback;
+    }
+
+    observe() {}
+
+    disconnect() {}
+  };
 
   // requestAnimationFrame выполняем синхронно.
   vi.stubGlobal("requestAnimationFrame", (fn) => { fn(); return 0; });
@@ -69,7 +74,7 @@ describe("форматирование таблицы", () => {
 
   it("подписывается на ResizeObserver для каждой таблицы", async () => {
     await setup(makeTable());
-    expect(ResizeObserver).toHaveBeenCalled();
+    expect(typeof resizeObserverCallback).toBe("function");
   });
 });
 

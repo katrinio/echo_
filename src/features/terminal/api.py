@@ -2,6 +2,7 @@ from fastapi import APIRouter, Request, Query
 from fastapi.responses import PlainTextResponse, RedirectResponse
 from fastapi.responses import JSONResponse
 
+from src.features.milestones.services import group_by_year_and_month
 from src.features.terminal.commands import COMMANDS
 from src.orm.milestone import Milestone
 from src.web.templates import templates
@@ -37,6 +38,16 @@ def random_page():
     if milestone is None:
         return PlainTextResponse("No milestones found.")
     return RedirectResponse(url=f"/milestones/{milestone.slug}", status_code=303)
+
+
+@router.get("/tree")
+def tree_page(request: Request):
+    return templates.TemplateResponse(
+        request,
+        "terminal/tree_year.html",
+        {"tree": group_by_year_and_month(Milestone.all())},
+    )
+
 
 @router.get("/search")
 def search_page(request: Request, q: str = Query(default="")):

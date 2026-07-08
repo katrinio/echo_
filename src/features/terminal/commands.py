@@ -46,6 +46,11 @@ COMMANDS = [
         example="random",
     ),
     CommandHelp(
+        name="tree",
+        description="Chronological tree view",
+        example="tree",
+    ),
+    CommandHelp(
         name="search",
         description="Search by title or description",
         example="search BREST",

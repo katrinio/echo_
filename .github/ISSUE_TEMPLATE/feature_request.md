@@ -4,7 +4,7 @@ about: Suggest an idea or improvement
 labels: enhancement
 ---
 
-## What's the problem or gap
+## Problem
 
 <!-- What's missing or awkward right now? -->
 

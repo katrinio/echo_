@@ -13,7 +13,7 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    database_url: str = f"sqlite:///{_ROOT / 'echo.db'}"
+    database_url: str = f"sqlite:///{_ROOT / 'user_data' / 'echo.db'}"
     session_secret_key: str = ""
     echo_password: str = ""
     echo_username: str = "katrin"
