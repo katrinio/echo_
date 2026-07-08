@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 
 from src.database import Base, engine
@@ -28,6 +28,26 @@ app = FastAPI(
     redoc_url=None,
     openapi_url=None,
 )
+
+
+@app.middleware("http")
+async def cache_control(request: Request, call_next):
+    response = await call_next(request)
+
+    if request.url.path.startswith("/static/"):
+        response.headers.setdefault(
+            "Cache-Control",
+            "public, max-age=31536000, immutable",
+        )
+        return response
+
+    content_type = response.headers.get("content-type", "")
+    if content_type.startswith("text/html"):
+        response.headers.setdefault("Cache-Control", "no-store")
+
+    return response
+
+
 app.add_middleware(AuthMiddleware)
 app.include_router(auth_router)
 app.mount("/static", StaticFiles(directory=SRC / "static"), name="static")

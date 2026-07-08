@@ -167,6 +167,12 @@ On validation error, the template is returned with an `error` field — no redir
 
 The bottom bar is a navigation layer, not a shell. Commands: `help`, `new`, `tags`, `tag {name}`, `random`, `search {query}`, `tree`, `logout`. The command list is served at `/terminal/commands` and used for autocomplete.
 
+## Cache policy
+
+- HTML responses should not be cached long-term.
+- Versioned static assets should be cached long-term (`Cache-Control: public, max-age=31536000, immutable`).
+- All CSS and JS references in templates should include `asset_version(...)` so the URL changes when file contents change.
+
 ## Timeline
 
 `/tree` renders a chronological terminal journal using data grouped by year, month, and day. The backend helper `group_by_year_and_month` returns nested `OrderedDict` values in the shape `Year -> Month -> Day -> [Milestone]` so the template can render plain text-style output with stable alignment.

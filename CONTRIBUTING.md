@@ -39,6 +39,7 @@ All of these run in CI on every PR — a failing check won't get merged.
 
 - New features go in `src/features/`, following the existing structure (`api.py`, `services.py`, `dto.py`).
 - Templates live in `src/templates/`, JavaScript in `src/static/js/`.
+- Keep template-linked CSS/JS versioned with `asset_version(...)` so browser caches invalidate on file changes.
 - The terminal bar is a navigation layer, not a shell — keep commands simple and purposeful.
 - Form validation belongs in DTOs (`dto.py`), not in route handlers.
 - Tests are expected for new Python logic; JS tests for anything in `src/static/js/`.
