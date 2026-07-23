@@ -43,3 +43,4 @@ Just enough CLI to get around.
 ---
 
 For setup, see [Development Guide](docs/development.md)
+Operational logging setup is documented in [docs/logging.md](docs/logging.md).

@@ -1,0 +1,39 @@
+loki.relabel "docker_build_cache_prune" {
+  forward_to = [loki.write.docker_build_cache_prune.receiver]
+
+  rule {
+    source_labels = ["__journal_priority_keyword"]
+    target_label  = "level"
+  }
+
+  rule {
+    source_labels = ["__journal__systemd_unit"]
+    target_label  = "unit"
+  }
+}
+
+loki.source.journal "docker_build_cache_prune" {
+  forward_to    = [loki.relabel.docker_build_cache_prune.receiver]
+  matches       = "_SYSTEMD_UNIT=docker-build-cache-prune.service"
+  relabel_rules = loki.relabel.docker_build_cache_prune.rules
+  labels = {
+    job     = "docker-cache-cleanup"
+    service = "docker-build-cache-prune"
+    host    = constants.hostname
+  }
+}
+
+loki.write "docker_build_cache_prune" {
+  endpoint {
+    url = sys.env("LOKI_URL")
+
+    // Optional for multi-tenant Loki:
+    // tenant_id = sys.env("LOKI_TENANT_ID")
+
+    // Optional for basic auth:
+    // basic_auth {
+    //   username = sys.env("LOKI_USERNAME")
+    //   password = sys.env("LOKI_PASSWORD")
+    // }
+  }
+}

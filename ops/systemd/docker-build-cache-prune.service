@@ -1,0 +1,14 @@
+[Unit]
+Description=Prune Docker build cache
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/default/docker-build-cache-prune
+ExecStart=/usr/bin/env bash ${REPO_DIR}/scripts/docker-build-cache-prune.sh
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
