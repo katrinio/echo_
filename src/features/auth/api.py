@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 from typing import Annotated
 
@@ -12,6 +13,7 @@ from .security import (
 from ...web.templates import templates
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 _STATIC = Path(__file__).parent.parent.parent / "static"
 
@@ -23,6 +25,7 @@ def robots():
 
 @router.get("/health")
 def health(request: Request):
+    logger.info("Health page opened")
     return templates.TemplateResponse(
         request,
         "auth/health.html",
@@ -34,6 +37,7 @@ def login_page(
     request: Request,
     next_url: Annotated[str, Query(alias="next")] = "/",
 ):
+    logger.info("Login page opened: next=%s", next_url)
     return templates.TemplateResponse(
         request,
         "auth/login.html",
@@ -50,6 +54,7 @@ def login(
     next_url: Annotated[str, Form(alias="next")] = "/",
 ):
     if not verify_password(password):
+        logger.warning("Login failed: next=%s", next_url)
         return templates.TemplateResponse(
             request,
             "auth/login.html",
@@ -60,9 +65,11 @@ def login(
             status_code=401,
         )
 
+    logger.info("Login succeeded: next=%s", next_url)
     return create_login_response(next_url)
 
 
 @router.get("/logout")
 def logout():
+    logger.info("Logout succeeded")
     return create_logout_response()

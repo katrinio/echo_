@@ -10,8 +10,11 @@ from src.features.terminal.api import router as terminal_router
 from src.features.tags.api import router as tags_router
 from src.features.auth.api import router as auth_router
 from src.features.auth.middleware import AuthMiddleware
+from src.logging_config import configure_logging
 
 SRC = Path(__file__).parent
+
+configure_logging()
 
 
 @asynccontextmanager
