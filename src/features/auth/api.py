@@ -2,14 +2,14 @@ from pathlib import Path
 from typing import Annotated
 
 from fastapi import APIRouter, Form, Query, Request
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 
 from .security import (
     create_login_response,
     create_logout_response,
     verify_password,
 )
-from ...web.templates import templates
+from ...web.templates import static_url, templates
 
 router = APIRouter()
 
@@ -19,6 +19,49 @@ _STATIC = Path(__file__).parent.parent.parent / "static"
 @router.get("/robots.txt", include_in_schema=False)
 def robots():
     return FileResponse(_STATIC / "robots.txt", media_type="text/plain")
+
+
+@router.get("/static/site.webmanifest", include_in_schema=False)
+def site_manifest(request: Request):
+    return JSONResponse(
+        {
+            "name": "Echo",
+            "short_name": "Echo",
+            "start_url": ".",
+            "scope": ".",
+            "display": "standalone",
+            "theme_color": "#111111",
+            "background_color": "#111111",
+            "icons": [
+                {
+                    "src": static_url(request, "icons/pwa-icon-192x192.png"),
+                    "sizes": "192x192",
+                    "type": "image/png",
+                    "purpose": "any",
+                },
+                {
+                    "src": static_url(request, "icons/pwa-icon-256x256.png"),
+                    "sizes": "256x256",
+                    "type": "image/png",
+                    "purpose": "any",
+                },
+                {
+                    "src": static_url(request, "icons/pwa-icon-384x384.png"),
+                    "sizes": "384x384",
+                    "type": "image/png",
+                    "purpose": "any",
+                },
+                {
+                    "src": static_url(request, "icons/pwa-icon-512x512.png"),
+                    "sizes": "512x512",
+                    "type": "image/png",
+                    "purpose": "any",
+                },
+            ],
+        },
+        headers={"Cache-Control": "no-cache"},
+        media_type="application/manifest+json",
+    )
 
 
 @router.get("/health")

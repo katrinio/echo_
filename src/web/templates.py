@@ -20,6 +20,8 @@ def _static_url(request: Request, rel_path: str) -> str:
     return f"{root_path}{path}?v={version}"
 
 
+static_url = _static_url
+
 templates.env.globals["asset_version"] = _asset_version
-templates.env.globals["static_url"] = _static_url
+templates.env.globals["static_url"] = static_url
 templates.env.globals["settings"] = settings

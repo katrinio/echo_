@@ -1,8 +1,11 @@
 from contextlib import asynccontextmanager
+import os
 from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
+from starlette.responses import Response
+from starlette.types import Scope
 
 from src.database import Base, engine
 from src.features.milestones.api import router as milestones_router
@@ -12,6 +15,22 @@ from src.features.auth.api import router as auth_router
 from src.features.auth.middleware import AuthMiddleware
 
 SRC = Path(__file__).parent
+
+
+class CacheControlledStaticFiles(StaticFiles):
+    def file_response(
+        self,
+        full_path: str | os.PathLike[str],
+        stat_result: os.stat_result,
+        scope: Scope,
+        status_code: int = 200,
+    ) -> Response:
+        response = super().file_response(full_path, stat_result, scope, status_code)
+        response.headers.setdefault(
+            "Cache-Control",
+            "public, max-age=31536000, immutable",
+        )
+        return response
 
 
 @asynccontextmanager
@@ -55,7 +74,7 @@ async def cache_control(request: Request, call_next):
 
 app.add_middleware(AuthMiddleware)
 app.include_router(auth_router)
-app.mount("/static", StaticFiles(directory=SRC / "static"), name="static")
+app.mount("/static", CacheControlledStaticFiles(directory=SRC / "static"), name="static")
 app.include_router(milestones_router)
 app.include_router(terminal_router)
 app.include_router(tags_router)
