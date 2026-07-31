@@ -15,7 +15,9 @@ def _asset_version(rel_path: str) -> int:
 
 def _static_url(request: Request, rel_path: str) -> str:
     version = _asset_version(rel_path)
-    return f"{request.url_for('static', path=rel_path)}?v={version}"
+    root_path = request.scope.get("root_path", "")
+    path = request.app.url_path_for("static", path=rel_path)
+    return f"{root_path}{path}?v={version}"
 
 
 templates.env.globals["asset_version"] = _asset_version
