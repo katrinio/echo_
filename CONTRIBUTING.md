@@ -37,7 +37,7 @@ All of these run in CI on every PR — a failing check won't get merged.
 
 ## Style
 
-- New features go in `src/features/`, following the existing structure (`api.py`, `services.py`, `dto.py`).
+- New features go in `src/features/`, following the existing structure; add `api.py`, `services.py`, or `dto.py` only when the feature needs them.
 - Templates live in `src/templates/`, JavaScript in `src/static/js/`.
 - Keep template-linked static assets referenced through `static_url(request, ...)` so browser caches invalidate on file changes and URLs respect ASGI `root_path`.
 - The terminal bar is a navigation layer, not a shell — keep commands simple and purposeful.

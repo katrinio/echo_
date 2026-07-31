@@ -11,7 +11,7 @@ echo_ is a personal milestone log — a small web app built with FastAPI, server
 | Web framework   | FastAPI                            |
 | Templates       | Jinja2                             |
 | ORM             | SQLAlchemy 2.x (Mapped API)        |
-| Database        | SQLite (`echo.db` in project root) |
+| Database        | SQLite (`user_data/echo.db` locally by default; configurable via `DATABASE_URL`) |
 | Migrations      | Alembic                            |
 | Form validation | Pydantic v2                        |
 | Configuration   | Pydantic Settings                  |
@@ -35,7 +35,7 @@ src/
     migrations/       — env.py, script.py.mako, versions/
 
   web/
-    templates.py      — shared Jinja2Templates, asset_version, settings in context
+    templates.py      — shared Jinja2Templates, static_url, asset_version, settings in context
 
   features/
     auth/
@@ -68,6 +68,7 @@ src/
       help.html, search.html
 
   static/
+    site.webmanifest
     css/
       base.css, forms.css
       pages/       timeline.css, milestone.css
@@ -77,7 +78,10 @@ src/
       keyboard/      global.js
       terminal/      input.js, input-mobile.js, navigation.js, table.js
     icons/
-      favicon.ico, favicon.svg, apple-touch-icon.png
+      favicon.ico, favicon-16x16.png, favicon-32x32.png
+      apple-touch-icon-180x180.png
+      pwa-icon-192x192.png, pwa-icon-256x256.png, pwa-icon-384x384.png, pwa-icon-512x512.png
+      larger source/reserve icons
 ```
 
 ## Routes
@@ -113,7 +117,7 @@ Read from `.env` via `pydantic-settings`. Variables:
 
 | Variable             | Default                        | Description                            |
 |----------------------|--------------------------------|----------------------------------------|
-| `DATABASE_URL`       | `sqlite:///echo.db`            | Database URL                           |
+| `DATABASE_URL`       | `sqlite:///.../user_data/echo.db` | Database URL                        |
 | `SESSION_SECRET_KEY` | —                              | Session signing key (required)         |
 | `ECHO_PASSWORD`      | —                              | Login password (required)              |
 | `ECHO_USERNAME`      | `katrin`                       | Username                               |
@@ -202,9 +206,9 @@ poetry run alembic -c src/orm/alembic.ini stamp 4f1b2d9c7a11
 ## Code quality
 
 Pre-commit hooks: Ruff, MyPy, djLint, Stylelint, ESLint, pytest, JS tests (Vitest), poetry check, alembic check.  
-Linters (except MyPy and pytest) run only on changed files.
+In pre-commit, linters run on changed files where possible; MyPy, pytest, JS tests, poetry check and alembic check run as full-project checks. CI runs full checks.
 
 CI (`.github/workflows/`):
 - `quality_gates.yml` — Python style, Frontend style, Python tests, JS tests, Migrations
-- `smoke.yml` — runs after quality gates, starts the server and checks `/login`
+- `smoke.yml` — runs after quality gates and executes middleware smoke tests
 - `release.yml` — semantic-release, publishes a draft release on push to main
