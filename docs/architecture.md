@@ -51,7 +51,6 @@ src/
 
     tags/
       api.py          — /tags, /tags/{tag_name}
-      services.py     — get_milestones_for_tag
 
     terminal/
       api.py          — /help, /random, /search, /terminal/commands, /tree
@@ -171,7 +170,7 @@ The bottom bar is a navigation layer, not a shell. Commands: `help`, `new`, `tag
 
 - HTML responses should not be cached long-term.
 - Versioned static assets should be cached long-term (`Cache-Control: public, max-age=31536000, immutable`).
-- All CSS and JS references in templates should include `asset_version(...)` so the URL changes when file contents change.
+- All template static references should use `static_url(request, ...)` so URLs include cache versions and respect ASGI `root_path`.
 
 ## Timeline
 

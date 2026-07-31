@@ -23,15 +23,15 @@ const COMMAND_HANDLERS = {
 
     return `Тег "${tagName}" не найден.`;
   },
-search: (args) => {
-  const query = args.trim();
+  search: (args) => {
+    const query = args.trim();
 
-  if (!query) {
-    return "Введите поисковый запрос.";
-  }
+    if (!query) {
+      return "Введите поисковый запрос.";
+    }
 
-  return `/search?q=${encodeURIComponent(query)}`;
-},
+    return `/search?q=${encodeURIComponent(query)}`;
+  },
 };
 
 window.TERMINAL_COMMAND_HANDLERS = COMMAND_HANDLERS;

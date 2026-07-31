@@ -2,6 +2,8 @@ import unittest
 from datetime import UTC, date, datetime, timedelta
 import sys
 from pathlib import Path
+from pydantic import ValidationError
+
 from src.features.milestones.dto import (
     MilestoneCreateDTO,
     today_in_timezone,
@@ -27,18 +29,14 @@ class TitleValidationTest(unittest.TestCase):
     def test_title_is_stripped(self) -> None:
         dto = self._make("  Hello  ")
         self.assertEqual(dto.title, "Hello")
-    #
-    # def test_empty_title_raises(self) -> None:
-    #     with self.assertRaises(ValidationError):
-    #         self._make("")
-    #
-    # def test_whitespace_only_title_raises(self) -> None:
-    #     with self.assertRaises(ValidationError):
-    #         self._make("   ")
 
-    # def test_cyrillic_title_raises(self) -> None:
-    #     with self.assertRaises(ValidationError):
-    #         self._make("Привет мир")
+    def test_empty_title_raises(self) -> None:
+        with self.assertRaises(ValidationError):
+            self._make("")
+
+    def test_whitespace_only_title_raises(self) -> None:
+        with self.assertRaises(ValidationError):
+            self._make("   ")
 
     def test_allowed_special_chars(self) -> None:
         dto = self._make("Finpipe v1.0 - release")
