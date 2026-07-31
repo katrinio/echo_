@@ -34,7 +34,12 @@ app = FastAPI(
 async def cache_control(request: Request, call_next):
     response = await call_next(request)
 
-    if request.url.path.startswith("/static/"):
+    path = request.scope.get("path", request.url.path)
+    root_path = request.scope.get("root_path", "")
+    if root_path and path.startswith(root_path):
+        path = path.removeprefix(root_path) or "/"
+
+    if path.startswith("/static/"):
         response.headers.setdefault(
             "Cache-Control",
             "public, max-age=31536000, immutable",

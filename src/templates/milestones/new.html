@@ -39,6 +39,5 @@
             </datalist>
             <button type="submit">Save</button>
         </form>
-        <script src="/static/js/milestones/date.js?v={{ asset_version("js/milestones/date.js") }}"
-                defer></script>
+        <script src="{{ static_url(request, 'js/milestones/date.js') }}" defer></script>
     {% endblock %}

@@ -15,7 +15,10 @@ PUBLIC_PATHS = {
 
 class AuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
-        path = request.url.path
+        path = request.scope.get("path", request.url.path)
+        root_path = request.scope.get("root_path", "")
+        if root_path and path.startswith(root_path):
+            path = path.removeprefix(root_path) or "/"
 
         if path.startswith("/static/"):
             return await call_next(request)

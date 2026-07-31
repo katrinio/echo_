@@ -3,48 +3,45 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#111111">
+        <link rel="manifest" href="{{ static_url(request, 'site.webmanifest') }}">
         <link rel="icon"
-              type="image/svg+xml"
-              href="/static/icons/favicon.svg?v={{ asset_version("icons/favicon.svg") }}">
+              sizes="16x16"
+              type="image/png"
+              href="{{ static_url(request, 'icons/favicon-16x16.png') }}">
+        <link rel="icon"
+              sizes="32x32"
+              type="image/png"
+              href="{{ static_url(request, 'icons/favicon-32x32.png') }}">
         <link rel="icon"
               type="image/x-icon"
-              href="/static/icons/favicon.ico?v={{ asset_version("icons/favicon.ico") }}">
+              href="{{ static_url(request, 'icons/favicon.ico') }}">
         <link rel="apple-touch-icon"
-              href="/static/icons/apple-touch-icon.png?v={{ asset_version("icons/apple-touch-icon.png") }}">
+              sizes="180x180"
+              href="{{ static_url(request, 'icons/apple-touch-icon-180x180.png') }}">
         <title>{% block title %}echo_.log{% endblock %}</title>
+        <link rel="stylesheet" href="{{ static_url(request, 'css/base.css') }}">
+        <link rel="stylesheet" href="{{ static_url(request, 'css/forms.css') }}">
         <link rel="stylesheet"
-              href="/static/css/base.css?v={{ asset_version("css/base.css") }}">
+              href="{{ static_url(request, 'css/pages/timeline.css') }}">
         <link rel="stylesheet"
-              href="/static/css/forms.css?v={{ asset_version("css/forms.css") }}">
+              href="{{ static_url(request, 'css/pages/milestone.css') }}">
         <link rel="stylesheet"
-              href="/static/css/pages/timeline.css?v={{ asset_version("css/pages/timeline.css") }}">
+              href="{{ static_url(request, 'css/components/terminal.css') }}">
         <link rel="stylesheet"
-              href="/static/css/pages/milestone.css?v={{ asset_version("css/pages/milestone.css") }}">
+              href="{{ static_url(request, 'css/components/terminal-table.css') }}">
         <link rel="stylesheet"
-              href="/static/css/components/terminal.css?v={{ asset_version("css/components/terminal.css") }}">
-        <link rel="stylesheet"
-              href="/static/css/components/terminal-table.css?v={{ asset_version("css/components/terminal-table.css") }}">
-        <link rel="stylesheet"
-              href="/static/css/components/terminal-tree.css?v={{ asset_version("css/components/terminal-tree.css") }}">
+              href="{{ static_url(request, 'css/components/terminal-tree.css') }}">
         {% block styles %}{% endblock %}
-        <script src="/static/js/autocomplete/core.js?v={{ asset_version("js/autocomplete/core.js") }}"
-                defer></script>
-        <script src="/static/js/terminal/history.js?v={{ asset_version("js/terminal/history.js") }}"
-                defer></script>
-        <script src="/static/js/autocomplete/terminal.js?v={{ asset_version("js/autocomplete/terminal.js") }}"
-                defer></script>
-        <script src="/static/js/autocomplete/tags.js?v={{ asset_version("js/autocomplete/tags.js") }}"
-                defer></script>
-        <script src="/static/js/terminal/input.js?v={{ asset_version("js/terminal/input.js") }}"
-                defer></script>
-        <script src="/static/js/terminal/input-mobile.js?v={{ asset_version("js/terminal/input-mobile.js") }}"
-                defer></script>
-        <script src="/static/js/terminal/table.js?v={{ asset_version("js/terminal/table.js") }}"
-                defer></script>
-        <script src="/static/js/keyboard/global.js?v={{ asset_version("js/keyboard/global.js") }}"
-                defer></script>
-        <script src="/static/js/terminal/navigation.js?v={{ asset_version("js/terminal/navigation.js") }}"
-                defer></script>
+        <script src="{{ static_url(request, 'js/autocomplete/core.js') }}" defer></script>
+        <script src="{{ static_url(request, 'js/terminal/history.js') }}" defer></script>
+        <script src="{{ static_url(request, 'js/autocomplete/terminal.js') }}" defer></script>
+        <script src="{{ static_url(request, 'js/autocomplete/tags.js') }}" defer></script>
+        <script src="{{ static_url(request, 'js/terminal/input.js') }}" defer></script>
+        <script src="{{ static_url(request, 'js/terminal/input-mobile.js') }}" defer></script>
+        <script src="{{ static_url(request, 'js/terminal/table.js') }}" defer></script>
+        <script src="{{ static_url(request, 'js/keyboard/global.js') }}" defer></script>
+        <script src="{{ static_url(request, 'js/terminal/navigation.js') }}" defer></script>
     </head>
     <body>
         <main>
