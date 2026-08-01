@@ -5,6 +5,11 @@ services:
     image: echo-app:latest
     build: .
     container_name: echo-app
+
+    labels:
+      com.katrin.logs.app: "echo"
+      com.katrin.logs.environment: "production"
+
     restart: unless-stopped
     ports:
       - "8001:8000"
