@@ -3,7 +3,11 @@ name: echo
 services:
   echo-app:
     image: echo-app:latest
-    build: .
+    build:
+      context: .
+      target: production
+      args:
+        ECHO_VERSION: ${ECHO_VERSION:?ECHO_VERSION must be set to a commit SHA, git tag, or build id}
     container_name: echo-app
 
     labels:
@@ -16,6 +20,8 @@ services:
     env_file:
       - .env
     environment:
+      ECHO_ENV: production
+      ECHO_VERSION: ${ECHO_VERSION:?ECHO_VERSION must be set to a commit SHA, git tag, or build id}
       DATABASE_URL: sqlite:////app/echo.db
     volumes:
       - /home/katrin/data/echo/echo.db:/app/echo.db
