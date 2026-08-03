@@ -9,7 +9,9 @@ PUBLIC_PATHS = {
     "/login",
     "/logout",
     "/health",
+    "/manifest.webmanifest",
     "/robots.txt",
+    "/sw.js",
 }
 
 

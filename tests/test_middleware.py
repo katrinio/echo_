@@ -1,12 +1,11 @@
-from pathlib import Path
-import os
+import subprocess
 
+import pytest
 from starlette.testclient import TestClient
 
+import src.version as version_module
 from src.app import app
 from src.features.auth.security import SESSION_COOKIE_NAME
-
-STATIC_DIR = Path(__file__).resolve().parents[1] / "src" / "static"
 
 
 class TestAuthMiddleware:
@@ -31,7 +30,7 @@ class TestAuthMiddleware:
         assert response.status_code != 303
 
     def test_manifest_has_no_cache_header_and_versioned_icons(self, client):
-        response = client.get("/static/site.webmanifest", follow_redirects=False)
+        response = client.get("/manifest.webmanifest", follow_redirects=False)
 
         assert response.status_code == 200
         assert response.headers["content-type"].startswith("application/manifest+json")
@@ -39,45 +38,82 @@ class TestAuthMiddleware:
 
         manifest = response.json()
         icon_urls = [icon["src"] for icon in manifest["icons"]]
-        expected_versions = {
-            size: int((STATIC_DIR / "icons" / f"pwa-icon-{size}x{size}.png").stat().st_mtime)
-            for size in (192, 256, 384, 512)
-        }
+        expected_version = version_module.get_version_string()
+        versions = {url.split("?v=", 1)[1] for url in icon_urls}
+        assert versions == {expected_version}
         assert icon_urls == [
-            f"/static/icons/pwa-icon-192x192.png?v={expected_versions[192]}",
-            f"/static/icons/pwa-icon-256x256.png?v={expected_versions[256]}",
-            f"/static/icons/pwa-icon-384x384.png?v={expected_versions[384]}",
-            f"/static/icons/pwa-icon-512x512.png?v={expected_versions[512]}",
+            f"/static/icons/pwa-icon-192x192.png?v={expected_version}",
+            f"/static/icons/pwa-icon-256x256.png?v={expected_version}",
+            f"/static/icons/pwa-icon-384x384.png?v={expected_version}",
+            f"/static/icons/pwa-icon-512x512.png?v={expected_version}",
+            f"/static/icons/pwa-maskable-192x192.png?v={expected_version}",
+            f"/static/icons/pwa-maskable-512x512.png?v={expected_version}",
         ]
+        assert {icon["purpose"] for icon in manifest["icons"]} >= {"any", "maskable"}
 
-    def test_pwa_icon_keeps_immutable_cache_header(self, client):
+    def test_versioned_pwa_icon_keeps_immutable_cache_header(self, client):
         response = client.get("/static/icons/pwa-icon-192x192.png", follow_redirects=False)
+        assert response.status_code == 200
+        assert response.headers["cache-control"] == "no-cache"
+
+        response = client.get(
+            f"/static/icons/pwa-icon-192x192.png?v={version_module.get_version_string()}",
+            follow_redirects=False,
+        )
 
         assert response.status_code == 200
         assert response.headers["cache-control"] == "public, max-age=31536000, immutable"
 
     def test_manifest_icon_urls_include_root_path(self):
         with TestClient(app, root_path="/echo") as client:
-            response = client.get("/static/site.webmanifest", follow_redirects=False)
+            response = client.get("/manifest.webmanifest", follow_redirects=False)
 
         assert response.status_code == 200
         icon_urls = [icon["src"] for icon in response.json()["icons"]]
         assert all(url.startswith("/echo/static/icons/") for url in icon_urls)
 
-    def test_manifest_icon_url_changes_when_icon_mtime_changes(self, client):
-        icon_path = STATIC_DIR / "icons" / "pwa-icon-192x192.png"
-        original_stat = icon_path.stat()
+    def test_manifest_uses_one_build_version_for_every_icon(self, client, monkeypatch):
+        monkeypatch.setenv("ECHO_VERSION", "deploy-123")
 
-        try:
-            initial_response = client.get("/static/site.webmanifest", follow_redirects=False)
-            os.utime(icon_path, (original_stat.st_atime, original_stat.st_mtime + 2))
-            updated_response = client.get("/static/site.webmanifest", follow_redirects=False)
-        finally:
-            os.utime(icon_path, (original_stat.st_atime, original_stat.st_mtime))
+        response = client.get("/manifest.webmanifest", follow_redirects=False)
 
-        initial_url = initial_response.json()["icons"][0]["src"]
-        updated_url = updated_response.json()["icons"][0]["src"]
-        assert initial_url != updated_url
+        versions = {icon["src"].split("?v=", 1)[1] for icon in response.json()["icons"]}
+        assert versions == {"deploy-123"}
+
+    def test_html_pwa_resources_use_build_version(self, auth_client, monkeypatch):
+        monkeypatch.setenv("ECHO_VERSION", "deploy-456")
+
+        response = auth_client.get("/", follow_redirects=False)
+
+        assert response.status_code == 200
+        assert "/manifest.webmanifest?v=deploy-456" in response.text
+        assert "/static/icons/favicon.ico?v=deploy-456" in response.text
+        assert "/static/icons/apple-touch-icon-180x180.png?v=deploy-456" in response.text
+        assert "/static/icons/safari-pinned-tab.svg?v=deploy-456" in response.text
+        assert "/sw.js?v=" not in response.text
+
+    def test_service_worker_is_public_and_not_cached(self, client):
+        response = client.get("/sw.js", follow_redirects=False)
+
+        assert response.status_code == 200
+        assert response.headers["cache-control"] == "no-cache"
+        assert "serviceWorker" not in response.text
+
+    def test_production_requires_non_local_asset_version(self, monkeypatch):
+        monkeypatch.delenv("ECHO_VERSION", raising=False)
+        monkeypatch.setattr(version_module, "_is_production_environment", lambda: True)
+        monkeypatch.setattr(
+            version_module.subprocess,
+            "check_output",
+            lambda *args, **kwargs: (_ for _ in ()).throw(subprocess.CalledProcessError(1, "git")),
+        )
+
+        with pytest.raises(version_module.AssetVersionError, match="ECHO_VERSION must be set"):
+            version_module.get_version_string()
+
+        monkeypatch.setenv("ECHO_VERSION", "local")
+        with pytest.raises(version_module.AssetVersionError, match="ECHO_VERSION must be set"):
+            version_module.get_version_string()
 
     def test_protected_route_redirects_to_login(self, client):
         client.cookies.clear()

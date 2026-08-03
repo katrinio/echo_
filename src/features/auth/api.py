@@ -1,4 +1,5 @@
 from pathlib import Path
+import json
 from typing import Annotated
 
 from fastapi import APIRouter, Form, Query, Request
@@ -9,7 +10,8 @@ from .security import (
     create_logout_response,
     verify_password,
 )
-from ...web.templates import static_url, templates
+from ...web.templates import templates
+from ...version import get_version_string
 
 router = APIRouter()
 
@@ -22,46 +24,35 @@ def robots():
 
 
 @router.get("/static/site.webmanifest", include_in_schema=False)
+@router.get("/manifest.webmanifest", include_in_schema=False)
 def site_manifest(request: Request):
+    manifest = json.loads((_STATIC / "site.webmanifest").read_text(encoding="utf-8"))
+    version = get_version_string()
+    for icon in manifest.get("icons", []):
+        src = icon.get("src")
+        if isinstance(src, str) and "?" not in src:
+            icon["src"] = _manifest_static_url(request, src, version)
     return JSONResponse(
-        {
-            "name": "Echo",
-            "short_name": "Echo",
-            "start_url": ".",
-            "scope": ".",
-            "display": "standalone",
-            "theme_color": "#111111",
-            "background_color": "#111111",
-            "icons": [
-                {
-                    "src": static_url(request, "icons/pwa-icon-192x192.png"),
-                    "sizes": "192x192",
-                    "type": "image/png",
-                    "purpose": "any",
-                },
-                {
-                    "src": static_url(request, "icons/pwa-icon-256x256.png"),
-                    "sizes": "256x256",
-                    "type": "image/png",
-                    "purpose": "any",
-                },
-                {
-                    "src": static_url(request, "icons/pwa-icon-384x384.png"),
-                    "sizes": "384x384",
-                    "type": "image/png",
-                    "purpose": "any",
-                },
-                {
-                    "src": static_url(request, "icons/pwa-icon-512x512.png"),
-                    "sizes": "512x512",
-                    "type": "image/png",
-                    "purpose": "any",
-                },
-            ],
-        },
+        manifest,
         headers={"Cache-Control": "no-cache"},
         media_type="application/manifest+json",
     )
+
+
+@router.get("/sw.js", include_in_schema=False)
+def service_worker():
+    return FileResponse(
+        _STATIC / "sw.js",
+        media_type="text/javascript; charset=utf-8",
+        headers={"Cache-Control": "no-cache"},
+    )
+
+
+def _manifest_static_url(request: Request, src: str, version: str) -> str:
+    rel_path = src.removeprefix("/").removeprefix("static/")
+    root_path = request.scope.get("root_path", "")
+    path = request.app.url_path_for("static", path=rel_path)
+    return f"{root_path}{path}?v={version}"
 
 
 @router.get("/health")

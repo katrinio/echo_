@@ -26,10 +26,10 @@ class CacheControlledStaticFiles(StaticFiles):
         status_code: int = 200,
     ) -> Response:
         response = super().file_response(full_path, stat_result, scope, status_code)
-        response.headers.setdefault(
-            "Cache-Control",
-            "public, max-age=31536000, immutable",
-        )
+        query = scope.get("query_string", b"")
+        has_version = any(part.startswith(b"v=") and len(part) > 2 for part in query.split(b"&"))
+        cache_control = "public, max-age=31536000, immutable" if has_version else "no-cache"
+        response.headers.setdefault("Cache-Control", cache_control)
         return response
 
 
@@ -59,10 +59,10 @@ async def cache_control(request: Request, call_next):
         path = path.removeprefix(root_path) or "/"
 
     if path.startswith("/static/"):
-        response.headers.setdefault(
-            "Cache-Control",
-            "public, max-age=31536000, immutable",
-        )
+        query = request.scope.get("query_string", b"")
+        has_version = any(part.startswith(b"v=") and len(part) > 2 for part in query.split(b"&"))
+        cache_control = "public, max-age=31536000, immutable" if has_version else "no-cache"
+        response.headers.setdefault("Cache-Control", cache_control)
         return response
 
     content_type = response.headers.get("content-type", "")
