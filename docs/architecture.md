@@ -113,7 +113,12 @@ The session is stored in an httponly cookie (`echo_session`), signed with `itsda
 
 ## Configuration
 
-Read from `.env` via `pydantic-settings`. Variables:
+Local development reads application settings from `.env` via `pydantic-settings`.
+`ENVIRONMENT` is read directly from the process environment. In production,
+Docker Compose loads `ENVIRONMENT` from `.env`, while `ECHO_PASSWORD` and
+`SESSION_SECRET_KEY` are injected by Infisical at deploy time.
+
+Variables:
 
 | Variable             | Default                        | Description                            |
 |----------------------|--------------------------------|----------------------------------------|
@@ -121,7 +126,7 @@ Read from `.env` via `pydantic-settings`. Variables:
 | `SESSION_SECRET_KEY` | —                              | Session signing key (required)         |
 | `ECHO_PASSWORD`      | —                              | Login password (required)              |
 | `ECHO_USERNAME`      | `katrin`                       | Username                               |
-| `ENVIRONMENT`        | from system env, not from .env | `production` enables the secure cookie |
+| `ENVIRONMENT`        | from process environment       | `production` enables the secure cookie |
 
 ## Data models
 
