@@ -39,7 +39,7 @@ infisical_compose() {
   ECHO_VERSION="$echo_version" infisical run \
     --projectId="$INFISICAL_PROJECT_ID" \
     --env=prod \
-    --path=/echo \
+    --path=/echo_ \
     -- docker compose "$@"
 }
 
