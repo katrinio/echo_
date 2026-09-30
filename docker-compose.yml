@@ -23,5 +23,7 @@ services:
       ECHO_ENV: production
       ECHO_VERSION: ${ECHO_VERSION:?ECHO_VERSION must be set to a commit SHA, git tag, or build id}
       DATABASE_URL: sqlite:////app/echo.db
+      ECHO_PASSWORD: ${ECHO_PASSWORD:?ECHO_PASSWORD must be set}
+      SESSION_SECRET_KEY: ${SESSION_SECRET_KEY:?SESSION_SECRET_KEY must be set}
     volumes:
       - /home/katrin/data/echo/echo.db:/app/echo.db
